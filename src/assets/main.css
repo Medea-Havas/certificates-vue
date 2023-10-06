@@ -1,0 +1,30 @@
+@import './base.css';
+
+h2 {
+  font-size: var(--lg);
+}
+
+h3 {
+  font-size: var(--med);
+}
+
+#app {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+.flexContainer {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+}
+.flexContainerStart {
+  align-items: start;
+  display: flex;
+  gap: 4rem;
+  justify-content: center;
+  width: 100%;
+}
