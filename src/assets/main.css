@@ -1,5 +1,9 @@
 @import './base.css';
 
+h1 {
+  font-size: var(--xl);
+}
+
 h2 {
   font-size: var(--lg);
 }
@@ -12,6 +16,39 @@ h3 {
   display: flex;
   height: 100vh;
   width: 100%;
+}
+
+body .el-button {
+  background: var(--white);
+  border-color: var(--bluelowlight);
+  color: var(--bluelowlight);
+  text-transform: uppercase;
+}
+
+body .el-button:focus-visible {
+  outline: none;
+}
+
+body .el-button.el-button--danger:focus,
+body .el-button.el-button--danger:hover {
+  background: var(--warn);
+  color: var(--white);
+}
+
+body .el-button + .el-button {
+  margin-left: 0.25rem;
+}
+
+body .el-button:focus,
+body .el-button:hover {
+  background: var(--white);
+  color: var(--pinklowlight);
+  border-color: var(--pinklowlight);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.2);
+}
+
+body .el-table__header-wrapper th:hover {
+  color: var(--bluelowlight);
 }
 
 .flexContainer {

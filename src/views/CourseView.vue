@@ -6,7 +6,7 @@ const route = useRoute()
 const course = ref(null)
 
 const getCourse = async () => {
-  return fetch('https://certificates-api.hhytest.com/courses/' + route.params.id).then((response) =>
+  return fetch(`${import.meta.env.VITE_API_HOST}/courses/${route.params.id}`).then((response) =>
     response.json()
   )
 }

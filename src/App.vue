@@ -1,31 +1,41 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import { ref } from 'vue'
+import router from '@/router'
 
 const isCollapsed = ref(false)
+
+const open = (route) => {
+  router.push(route)
+}
 </script>
 
 <template>
   <el-container>
     <el-aside :class="{ collapsed: isCollapsed }" width="200px">
-      <el-menu router :collapse="isCollapsed">
+      <el-menu router :collapse="isCollapsed" ref="mainMenu">
         <el-menu-item @click="isCollapsed = !isCollapsed" class="right">
           <el-icon><Plus v-if="isCollapsed" /><Close v-if="!isCollapsed" /></el-icon>
         </el-menu-item>
         <hr />
-        <el-menu-item index="/" route="/">
+        <el-menu-item index="/" route="/" tabindex="0" @keyup.space="open('/')">
           <el-icon><HomeFilled /></el-icon>
           <span>Inicio</span>
         </el-menu-item>
         <hr />
-        <el-menu-item index="/cursos" route="/cursos">
+        <el-menu-item index="/cursos" route="/cursos" tabindex="0" @keyup.space="open('/cursos')">
           <el-icon><Menu /></el-icon>
           <span>Cursos</span>
         </el-menu-item>
         <hr />
-        <el-menu-item index="/estudiantes" route="/estudiantes">
+        <el-menu-item
+          index="/alumnos"
+          route="/alumnos"
+          tabindex="0"
+          @keyup.space="open('/alumnos')"
+        >
           <el-icon><OfficeBuilding /></el-icon>
-          <span>Estudiantes</span>
+          <span>Alumnos</span>
         </el-menu-item>
         <hr />
       </el-menu>
@@ -61,10 +71,10 @@ h1 {
 .el-footer {
   background: #f8cacc;
   bottom: 0;
-  font-size: 0.8333rem;
+  font-size: var(--sm);
   height: unset;
   left: 0;
-  padding: 1rem 2rem;
+  padding: 0.5rem 0;
   position: fixed;
   text-align: center;
   width: 100%;
@@ -76,7 +86,7 @@ h1 {
   box-shadow: 0px 2px 4px -1px var(--steelbluelowlight);
   display: flex;
   justify-content: space-between;
-  color: white;
+  color: var(--white);
   height: 65px;
 }
 .el-main {
@@ -98,7 +108,8 @@ h1 {
   margin-right: 0.5rem;
 }
 .el-menu-item:hover,
-.el-menu-item.is-active {
+.el-menu-item.is-active,
+.el-menu-item:focus {
   background: var(--steelbluelowlight);
   color: white;
   box-shadow: 0px 2px 4px -1px var(--steelbluelowlight);
@@ -112,8 +123,12 @@ h1 {
   color: var(--steelbluelowlight);
   fill-opacity: 1;
 }
+.collapsed .right {
+  justify-content: center;
+}
 .right {
   display: flex;
   justify-content: right;
+  width: 100%;
 }
 </style>

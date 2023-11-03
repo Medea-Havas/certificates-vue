@@ -1,15 +1,15 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
-export const useStatsStore = defineStore('stats', () => {
-  const stats = ref({})
+export const useTemplatesStore = defineStore('templates', () => {
+  const templates = ref({})
   const loading = ref(true)
 
-  async function getStats() {
-    return await fetch(`${import.meta.env.VITE_API_HOST}/stats`)
+  async function getTemplates() {
+    return await fetch(`${import.meta.env.VITE_API_HOST}/templates`)
       .then((response) => response.json())
       .then((data) => {
-        stats.value = data
+        templates.value = data
         loading.value = false
         console.log('Data is fetched')
       })
@@ -18,7 +18,7 @@ export const useStatsStore = defineStore('stats', () => {
       })
   }
 
-  getStats()
+  getTemplates()
 
-  return { stats, loading, getStats }
+  return { templates, loading, getTemplates }
 })
