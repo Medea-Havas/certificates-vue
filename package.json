@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
@@ -11,9 +11,12 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
+    "crypto-js": "^4.2.0",
     "element-plus": "^2.3.12",
+    "html2pdf.js": "^0.10.1",
     "moment": "^2.29.4",
     "pinia": "^2.1.6",
+    "read-excel-file": "^5.7.1",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4"
   },

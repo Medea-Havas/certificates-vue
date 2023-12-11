@@ -1,20 +1,171 @@
+<template>
+  <div class="header">
+    <h2>Alumnos</h2>
+    <div>
+      <el-button tabindex="0" @click="handleNewStudent">+ Nuevo alumno</el-button>
+    </div>
+  </div>
+  <el-table
+    :data="filterTableData"
+    :default-sort="{ prop: 'id', order: 'descending' }"
+    empty-text="No hay alumnos. ¡Añade alguno!"
+    style="width: 100%"
+  >
+    <el-table-column prop="name" label="Nombre" sortable width="180">
+      <template #default="scope">
+        <el-tooltip
+          class="box-item"
+          effect="dark"
+          :content="scope.row.name"
+          placement="top-start"
+          trigger="click"
+        >
+          <span class="ellipsis">{{ scope.row.name }}</span>
+        </el-tooltip>
+      </template>
+    </el-table-column>
+    <el-table-column prop="last_name" label="Apellidos" sortable width="250">
+      <template #default="scope">
+        <el-tooltip
+          class="box-item"
+          effect="dark"
+          :content="scope.row.last_name"
+          placement="top-start"
+          trigger="click"
+        >
+          <span class="ellipsis">{{ scope.row.last_name }}</span>
+        </el-tooltip>
+      </template>
+    </el-table-column>
+    <el-table-column prop="email" label="Email" sortable width="260">
+      <template #default="scope">
+        <el-tooltip
+          class="box-item"
+          effect="dark"
+          :content="scope.row.email"
+          placement="top-start"
+          trigger="click"
+        >
+          <span class="ellipsis">{{ scope.row.email }}</span>
+        </el-tooltip>
+      </template>
+    </el-table-column>
+    <el-table-column prop="nif" label="NIF" sortable width="130">
+      <template #default="scope">
+        {{ scope.row.nif }}
+      </template>
+    </el-table-column>
+    <el-table-column align="right" width="220">
+      <template #header>
+        <el-input
+          :prefix-icon="Search"
+          clearable
+          placeholder="Buscar..."
+          size="small"
+          v-model="search"
+        />
+      </template>
+      <template #default="scope">
+        <div class="buttons">
+          <el-button
+            size="small"
+            @click="handleView(scope.row)"
+            @keyup.space="handleView(scope.row)"
+            tabindex="0"
+            >Ver</el-button
+          >
+          <el-button
+            size="small"
+            @click="handleEdit(scope.row)"
+            @keyup.space="handleEdit(scope.row)"
+            tabindex="0"
+            >Editar</el-button
+          >
+          <el-popconfirm
+            @confirm="handleDelete(scope.row)"
+            cancel-button-text="No, gracias"
+            confirm-button-text="Sí"
+            icon-color="red"
+            title="¿BORRAR ALUMNO?"
+            width="200"
+            icon="WarningFilled"
+          >
+            <template #reference>
+              <el-button size="small" type="danger" tabindex="0">Borrar</el-button>
+            </template>
+          </el-popconfirm>
+        </div>
+      </template>
+    </el-table-column>
+  </el-table>
+  <StudentForm
+    v-if="dialogFormVisible"
+    @changeFormVisibility="changeFormVisibility"
+    :title="formTitle"
+    :isEdit="isEdit"
+    :student="student"
+    :dialogFormVisible="dialogFormVisible"
+  />
+</template>
+
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed } from 'vue'
+import { useStudentsStore } from '@/stores/students'
+import { storeToRefs } from 'pinia'
+import { Search } from '@element-plus/icons-vue'
+import router from '@/router'
+import StudentForm from '../components/studentForm.vue'
 
-const students = ref(null)
+const studentsStore = useStudentsStore()
+const { students } = storeToRefs(studentsStore)
 
-const getStudents = async () => {
-  return fetch(`${import.meta.env.VITE_API_HOST}/users`).then((response) => response.json())
+const search = ref('')
+const isEdit = ref(false)
+const student = ref({})
+const dialogFormVisible = ref(false)
+const formTitle = ref('Nuevo alumno')
+
+const changeFormVisibility = (visibility) => {
+  dialogFormVisible.value = visibility
 }
 
-onMounted(() => {
-  getStudents().then((data) => (students.value = data))
-})
+const filterTableData = computed(() =>
+  students.value.filter(
+    (data) =>
+      !search.value ||
+      data.name.toLowerCase().includes(search.value.toLowerCase()) ||
+      data.last_name.toLowerCase().includes(search.value.toLowerCase()) ||
+      data.email.toLowerCase().includes(search.value.toLowerCase()) ||
+      data.nif.toLowerCase().includes(search.value.toLowerCase())
+  )
+)
+
+const handleNewStudent = () => {
+  isEdit.value = false
+  formTitle.value = 'Nuevo alumno'
+  dialogFormVisible.value = true
+  student.value = {}
+}
+
+const handleView = (row) => {
+  router.push(`/alumno/${row.id}`)
+}
+const handleEdit = (row) => {
+  isEdit.value = true
+  formTitle.value = 'Editar alumno'
+  student.value = row
+  dialogFormVisible.value = true
+}
+const handleDelete = (row) => {
+  studentsStore.removeStudent(row.id)
+}
 </script>
 
-<template>
-  <h1>Alumnos</h1>
-  <div v-for="student in students" :key="student.id">
-    <p>{{ student.name }}</p>
-  </div>
-</template>
+<style scoped>
+.header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+}
+</style>

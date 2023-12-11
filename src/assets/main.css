@@ -1,18 +1,23 @@
 @import './base.css';
 
+h1,
+h2,
+h3 {
+  line-height: 1.3;
+}
 h1 {
   font-size: var(--xl);
 }
 
 h2 {
-  font-size: var(--lg);
+  font-size: var(--xl);
 }
 
 h3 {
   font-size: var(--med);
 }
 
-#app {
+.app {
   display: flex;
   height: 100vh;
   width: 100%;
@@ -36,7 +41,7 @@ body .el-button.el-button--danger:hover {
 }
 
 body .el-button + .el-button {
-  margin-left: 0.25rem;
+  margin-left: 0;
 }
 
 body .el-button:focus,
@@ -47,21 +52,202 @@ body .el-button:hover {
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.2);
 }
 
+body .el-form-item__label {
+  font-size: var(--sm);
+  justify-content: flex-start;
+  height: 26px;
+}
+
+body .el-message--warning .el-message__content {
+  color: #945d0c;
+}
+
 body .el-table__header-wrapper th:hover {
   color: var(--bluelowlight);
 }
 
-.flexContainer {
-  align-items: center;
-  display: flex;
-  height: 100%;
-  justify-content: center;
+body .el-tag {
+  background-color: var(--skybluehighlight);
+  border-color: var(--steelbluelowlight);
+  color: var(--steelbluelowlight);
+}
+
+body .el-icon--document,
+body .el-upload-list_item-status-label {
+  display: inline-block;
+  width: auto;
+}
+
+body .el-upload-list__item-status-label {
+  justify-content: flex-start;
+}
+
+body .el-upload-list__item .el-icon {
+  background: white;
+  border-radius: 100%;
+  width: auto;
+}
+
+body .el-tabs__content {
+  margin-top: 2rem;
+}
+
+body .el-tabs__item {
+  color: #222;
+}
+
+body .el-tabs__item:hover {
+  color: var(--blue);
+}
+
+body .el-tabs__item.is-active {
+  color: var(--blue);
+}
+
+body .el-tabs__active-bar {
+  background-color: var(--blue);
+}
+
+body .el-icon--close-tip {
+  display: none !important;
+}
+
+body .el-upload-list {
+  position: fixed;
+  right: 1.5rem;
+  width: 20rem;
+  background: white;
+  border-radius: 5px;
+}
+body .el-upload-list li {
+  padding: 0.3rem 0.5rem 0;
+}
+
+body .c_thumb .el-upload-list {
+  top: 0;
+}
+body .c_image .el-upload-list {
+  top: 3rem;
+}
+body .c_image2 .el-upload-list {
+  top: 6rem;
+}
+.dialog-footer button {
+  margin: 0.25rem 0;
   width: 100%;
 }
-.flexContainerStart {
-  align-items: start;
+body .el-dialog {
+  width: 80%;
+}
+body .el-dialog__header {
+  margin: 0;
+  padding: 2rem 2rem 0.5rem;
+}
+body .el-dialog__body {
+  padding: 1rem 2rem;
+}
+body .el-dialog__headerbtn {
+  right: 0.75rem;
+  top: 1.125rem;
+}
+body .el-dialog__title {
+  font-size: var(--med);
+}
+
+body .el-form {
   display: flex;
-  gap: 4rem;
-  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+}
+body .el-form-item {
+  justify-content: left;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5rem;
   width: 100%;
+}
+body .el-form-item.content {
+  width: 100%;
+}
+body .el-select {
+  width: 100%;
+}
+.hidden {
+  display: none;
+}
+.header {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+}
+.header h2 {
+  margin-right: 0;
+}
+.header div {
+  margin: 0;
+}
+.header button {
+  margin: 0.5rem 0;
+}
+.ellipsis {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+body .el-form-item__content button span {
+  display: inline-block;
+  text-align: center;
+}
+body .el-input-number {
+  width: 100%;
+}
+.lightButton {
+  border: none;
+  box-shadow: 0 0 0 1px var(--el-input-border-color, var(--el-border-color)) inset;
+}
+.lightButton:hover {
+  border: 1px solid #cfcfcf;
+}
+.lightButton span {
+  color: var(--el-text-color-regular);
+}
+.width100 * {
+  width: 100%;
+}
+
+@media screen and (min-width: 960px) {
+  body .el-dialog {
+    max-width: 40rem;
+    width: 40%;
+  }
+}
+@media screen and (min-width: 700px) {
+  body .el-form-item {
+    width: calc(50% - 0.5rem);
+  }
+}
+@media screen and (min-width: 500px) {
+  .header h2 {
+    margin-right: 1rem;
+  }
+  .header div {
+    margin: 0.5rem 0 0.2rem;
+  }
+  .header button {
+    margin: 0;
+  }
+}
+
+@media screen and (min-width: 450px) {
+  body .el-button + .el-button {
+    margin-left: 0.25rem;
+  }
+  .dialog-footer button {
+    margin: 0;
+    width: unset;
+  }
 }

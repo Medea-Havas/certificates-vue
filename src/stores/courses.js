@@ -4,10 +4,16 @@ import moment from 'moment'
 
 export const useCoursesStore = defineStore('courses', () => {
   const courses = ref([])
+  const coursesNotFromUser = ref([])
   const loading = ref(true)
 
-  function getCourses() {
-    fetch(`${import.meta.env.VITE_API_HOST}/courses`)
+  async function getCourses() {
+    await fetch(`${import.meta.env.VITE_API_HOST}/courses`, {
+      headers: {
+        'Content-type': 'application/json;charset=UTF-8',
+        Token: 'Bearer ' + sessionStorage.getItem('token')
+      }
+    })
       .then((response) => response.json())
       .then(
         (data) =>
@@ -22,8 +28,6 @@ export const useCoursesStore = defineStore('courses', () => {
         // Credits transform string to double
         courses.value.forEach((course) => {
           course.credits = parseFloat(course.credits)
-          course.certificate_thumbnail =
-            import.meta.env.VITE_API_HOST + '/assets/certificates/' + course.certificate_thumbnail
         })
       })
       .catch((error) => {
@@ -31,32 +35,104 @@ export const useCoursesStore = defineStore('courses', () => {
       })
   }
 
-  function addCourse(data) {
-    console.log(data)
-    fetch(`${import.meta.env.VITE_API_HOST}/courses`, {
+  async function getCoursesToEnroll(userId) {
+    await fetch(`${import.meta.env.VITE_API_HOST}/coursesnotfromuser/${userId}`, {
+      headers: {
+        'Content-type': 'application/json;charset=UTF-8',
+        Token: 'Bearer ' + sessionStorage.getItem('token')
+      }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        coursesNotFromUser.value = data
+        loading.value = false
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  async function addCourse(data) {
+    await fetch(`${import.meta.env.VITE_API_HOST}/courses`, {
       method: 'POST',
       body: JSON.stringify(data),
-      headers: { 'Content-type': 'application/json;charset=UTF-8' }
+      headers: {
+        'Content-type': 'application/json;charset=UTF-8',
+        Token: 'Bearer ' + sessionStorage.getItem('token')
+      }
     })
       .then((response) => response.json())
       .then((res) => {
         if (res.status === 201) {
-          courses.value.push(res.data)
+          courses.value.unshift(res.data)
         }
       })
       .catch((error) => console.log(error))
   }
 
-  function removeCourse(id) {
-    fetch(`${import.meta.env.VITE_API_HOST}/courses/${id}`, {
+  async function enrollInCourse(data) {
+    await fetch(`${import.meta.env.VITE_API_HOST}/userscourses`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-type': 'application/json;charset=UTF-8',
+        Token: 'Bearer ' + sessionStorage.getItem('token')
+      }
+    })
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.status === 201) {
+          console.log(data.course_id)
+          coursesNotFromUser.value = coursesNotFromUser.value.filter(function (obj) {
+            return obj.id !== data.course_id
+          })
+          console.log(coursesNotFromUser.value)
+          loading.value = false
+        }
+      })
+      .catch((error) => console.log(error))
+  }
+
+  async function updateCourse(data, courseId) {
+    await fetch(`${import.meta.env.VITE_API_HOST}/courses/${courseId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-type': 'application/json;charset=UTF-8',
+        Token: 'Bearer ' + sessionStorage.getItem('token')
+      }
+    })
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.status === 200) {
+          let index = courses.value.findIndex((obj) => obj.id == courseId)
+          data['certificate_thumbnail'] = `${import.meta.env.VITE_API_HOST}/assets/certificates/${
+            data['certificate_thumbnail']
+          }`
+          data['certificate_image'] = `${import.meta.env.VITE_API_HOST}/assets/certificates/${
+            data['certificate_image']
+          }`
+          data['certificate_image2'] = `${import.meta.env.VITE_API_HOST}/assets/certificates/${
+            data['certificate_image2']
+          }`
+          courses.value[index] = data
+        }
+      })
+      .catch((error) => console.log(error))
+  }
+
+  async function removeCourse(id) {
+    await fetch(`${import.meta.env.VITE_API_HOST}/courses/${id}`, {
       method: 'DELETE',
-      headers: { 'Content-type': 'application/json;charset=UTF-8' }
+      headers: {
+        'Content-type': 'application/json;charset=UTF-8',
+        Token: 'Bearer ' + sessionStorage.getItem('token')
+      }
     })
       .then((response) => response.json())
       .then((res) => {
         if (res.status === 200) {
           courses.value = courses.value.filter((item) => item.id !== id)
-          console.log(res)
         }
       })
       .catch((error) => console.log(error))
@@ -64,5 +140,15 @@ export const useCoursesStore = defineStore('courses', () => {
 
   getCourses()
 
-  return { courses, loading, getCourses, addCourse, removeCourse }
+  return {
+    courses,
+    coursesNotFromUser,
+    loading,
+    getCourses,
+    getCoursesToEnroll,
+    addCourse,
+    enrollInCourse,
+    updateCourse,
+    removeCourse
+  }
 })
