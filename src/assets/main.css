@@ -205,6 +205,17 @@ body .el-form-item__content button span {
 body .el-input-number {
   width: 100%;
 }
+body .el-pagination.is-background .btn-next.is-active,
+body .el-pagination.is-background .btn-prev.is-active,
+body .el-pagination.is-background .el-pager li.is-active {
+  background-color: var(--steelblue);
+}
+body .el-pager li:hover {
+  color: var(--steelblue);
+}
+.el-popper .el-select-dropdown__item.selected {
+  color: var(--steelblue);
+}
 .lightButton {
   border: none;
   box-shadow: 0 0 0 1px var(--el-input-border-color, var(--el-border-color)) inset;
@@ -214,6 +225,9 @@ body .el-input-number {
 }
 .lightButton span {
   color: var(--el-text-color-regular);
+}
+.pagination {
+  margin: 2rem 0;
 }
 .width100 * {
   width: 100%;

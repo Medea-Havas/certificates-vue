@@ -6,7 +6,8 @@
     </div>
   </div>
   <el-table
-    :data="filterTableData"
+    v-loading="loading"
+    :data="courses"
     :default-sort="{ prop: 'id', order: 'descending' }"
     empty-text="No hay cursos. ¡Matricula alguno!"
     style="width: 100%"
@@ -48,12 +49,14 @@
     </el-table-column>
     <el-table-column align="right" width="220">
       <template #header>
+        {{ searchInput }}
         <el-input
+          @input="filterTableData"
           :prefix-icon="Search"
           clearable
           placeholder="Buscar..."
           size="small"
-          v-model="search"
+          v-model="searchInput"
         />
       </template>
       <template #default="scope">
@@ -91,7 +94,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import moment from 'moment'
 import { Search } from '@element-plus/icons-vue'
 import router from '@/router'
@@ -101,6 +104,8 @@ import { useCoursesStore } from '../stores/courses'
 import { useStudentCoursesStore } from '@/stores/studentCourses'
 import { useRoute } from 'vue-router'
 
+const emit = defineEmits(['handleSearch'])
+
 const route = useRoute()
 const coursesStore = useCoursesStore()
 const studentCoursesStore = useStudentCoursesStore()
@@ -109,7 +114,9 @@ const { coursesNotFromUser } = storeToRefs(coursesStore)
 
 const props = defineProps({
   courses: Object,
-  studentId: Number
+  studentId: Number,
+  search: String,
+  loading: Boolean
 })
 
 onBeforeMount(async () => {
@@ -117,18 +124,13 @@ onBeforeMount(async () => {
   await coursesStore.getCoursesToEnroll(route.params.id)
 })
 
-const search = ref('')
+const searchInput = ref(props.search)
 const dialogFormVisible = ref(false)
 const studentToUpdate = ref()
 
-const filterTableData = computed(() =>
-  props.courses.filter(
-    (data) =>
-      !search.value ||
-      data.title.toLowerCase().includes(search.value.toLowerCase()) ||
-      data.file_number.toLowerCase().includes(search.value.toLowerCase())
-  )
-)
+const filterTableData = () => {
+  emit('handleSearch', searchInput.value)
+}
 
 const changeFormVisibility = (visibility) => {
   dialogFormVisible.value = visibility

@@ -8,6 +8,7 @@ export const useStudentsStore = defineStore('students', () => {
   const loading = ref(true)
 
   async function getStudents() {
+    loading.value = true
     await fetch(`${import.meta.env.VITE_API_HOST}/users`, {
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
@@ -18,6 +19,7 @@ export const useStudentsStore = defineStore('students', () => {
       .then((data) => {
         students.value = data
         studentsLength.value = data.length
+        loading.value = false
       })
       .catch((error) => {
         console.log(error)
@@ -25,6 +27,7 @@ export const useStudentsStore = defineStore('students', () => {
   }
 
   async function getUsersToEnroll(courseId) {
+    loading.value = true
     await fetch(`${import.meta.env.VITE_API_HOST}/usersnotfromcourse/${courseId}`, {
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
@@ -42,6 +45,7 @@ export const useStudentsStore = defineStore('students', () => {
   }
 
   async function addStudent(data) {
+    loading.value = true
     await fetch(`${import.meta.env.VITE_API_HOST}/users`, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -56,12 +60,14 @@ export const useStudentsStore = defineStore('students', () => {
           let tempData = data
           tempData.id = res.messages.id
           students.value.unshift(data)
+          loading.value = false
         }
       })
       .catch((error) => console.log(error))
   }
 
   async function updateStudent(data, studentId) {
+    loading.value = true
     await fetch(`${import.meta.env.VITE_API_HOST}/users/${studentId}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
@@ -75,12 +81,14 @@ export const useStudentsStore = defineStore('students', () => {
         if (res.status === 200) {
           let index = students.value.findIndex((obj) => obj.id == studentId)
           students.value[index] = data
+          loading.value = false
         }
       })
       .catch((error) => console.log(error))
   }
 
   async function removeStudent(studentId) {
+    loading.value = true
     await fetch(`${import.meta.env.VITE_API_HOST}/users/${studentId}`, {
       method: 'DELETE',
       headers: {
@@ -92,6 +100,7 @@ export const useStudentsStore = defineStore('students', () => {
       .then((res) => {
         if (res.status === 200) {
           students.value = students.value.filter((item) => item.id !== studentId)
+          loading.value = false
         }
       })
       .catch((error) => console.log(error))

@@ -7,6 +7,7 @@ export const useStudentStore = defineStore('student', () => {
   const loading = ref(true)
 
   async function getStudent(studentId) {
+    loading.value = true
     await fetch(`${import.meta.env.VITE_API_HOST}/users/${studentId}`, {
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
@@ -16,6 +17,7 @@ export const useStudentStore = defineStore('student', () => {
       .then((response) => response.json())
       .then((data) => {
         student.value = data
+        loading.value = false
       })
       .catch((error) => {
         console.log(error)
@@ -23,6 +25,7 @@ export const useStudentStore = defineStore('student', () => {
   }
 
   async function getStudentCourse(studentId, courseId) {
+    loading.value = true
     await fetch(`${import.meta.env.VITE_API_HOST}/usercourse/${studentId}/${courseId}`, {
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
@@ -32,6 +35,7 @@ export const useStudentStore = defineStore('student', () => {
       .then((response) => response.json())
       .then((data) => {
         studentCourse.value = data
+        loading.value = false
       })
       .catch((error) => {
         console.log(error)

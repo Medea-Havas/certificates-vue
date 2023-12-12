@@ -6,6 +6,7 @@ export const useCourseStudentsStore = defineStore('courseStudents', () => {
   const loading = ref(true)
 
   async function getCourseStudents(courseId) {
+    loading.value = true
     await fetch(`${import.meta.env.VITE_API_HOST}/usersfromcourse/${courseId}`, {
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
@@ -15,6 +16,7 @@ export const useCourseStudentsStore = defineStore('courseStudents', () => {
       .then((response) => response.json())
       .then((data) => {
         courseStudents.value = data
+        loading.value = false
       })
       .catch((error) => {
         console.log(error)

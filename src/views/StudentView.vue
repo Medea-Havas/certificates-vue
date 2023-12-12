@@ -1,17 +1,33 @@
 <template>
-  <div class="header">
-    <h2>
-      {{ student.name }} {{ student.last_name }} <el-tag>ID: {{ route.params.id }}</el-tag>
-    </h2>
-    <el-tabs v-model="activeName" class="courseTabs" @tab-change="changeTab">
-      <el-tab-pane label="Información" name="information">
-        <StudentInfo :student="student" />
-      </el-tab-pane>
-      <el-tab-pane label="Cursos" name="courses">
-        <StudentCourses :courses="studentCourses" :studentId="parseInt(route.params.id)" />
-      </el-tab-pane>
-    </el-tabs>
-  </div>
+  <h2>
+    {{ student.name }} {{ student.last_name }} <el-tag>ID: {{ route.params.id }}</el-tag>
+  </h2>
+  <el-tabs v-model="activeName" class="courseTabs" @tab-change="changeTab">
+    <el-tab-pane label="Información" name="information">
+      <StudentInfo :student="student" />
+    </el-tab-pane>
+    <el-tab-pane label="Cursos" name="courses">
+      <StudentCourses
+        :courses="pagination.filtered"
+        :loading="loading"
+        :search="search"
+        :studentId="parseInt(route.params.id)"
+        @handleSearch="handleSearch"
+      />
+      <el-pagination
+        v-if="!loading"
+        @current-change="handleCurrentChange"
+        @size-change="handleSizeChange"
+        :page-sizes="[10, 20, 100]"
+        :total="pagination.total"
+        background
+        class="pagination"
+        hide-on-single-page
+        layout="sizes, prev, pager, next"
+        v-model:page-size="pagination.pageSize"
+      />
+    </el-tab-pane>
+  </el-tabs>
 </template>
 
 <script setup>
@@ -26,16 +42,53 @@ import { storeToRefs } from 'pinia'
 const studentStore = useStudentStore()
 const studentCoursesStore = useStudentCoursesStore()
 const { student } = storeToRefs(studentStore)
-const { studentCourses } = storeToRefs(studentCoursesStore)
+const { studentCourses, loading } = storeToRefs(studentCoursesStore)
 
 const route = useRoute()
 
 const activeName = ref(sessionStorage.getItem('studentTabs') || 'information')
+const search = ref('')
+const pagination = ref({
+  filtered: [],
+  page: 1,
+  pageSize: 10,
+  total: 0
+})
 
 onBeforeMount(async () => {
   await studentStore.getStudent(route.params.id)
   await studentCoursesStore.getStudentCourses(route.params.id)
+  filterTableData()
 })
+
+const filterTableData = () => {
+  let filtered = studentCourses.value.filter(
+    (data) =>
+      !search.value ||
+      data.title.toLowerCase().includes(search.value.toLowerCase()) ||
+      data.file_number.toLowerCase().includes(search.value.toLowerCase())
+  )
+
+  pagination.value.total = filtered.length
+  pagination.value.filtered = filtered.slice(
+    pagination.value.pageSize * pagination.value.page - pagination.value.pageSize,
+    pagination.value.pageSize * pagination.value.page
+  )
+}
+
+const handleSizeChange = () => {
+  filterTableData()
+}
+
+const handleSearch = (searchTerm) => {
+  search.value = searchTerm
+  filterTableData()
+}
+
+const handleCurrentChange = (val) => {
+  pagination.value.page = val
+  filterTableData()
+}
 
 const changeTab = () => {
   sessionStorage.setItem('studentTabs', activeName.value)

@@ -6,7 +6,8 @@
     </div>
   </div>
   <el-table
-    :data="filterTableData"
+    v-loading="loading"
+    :data="pagination.filtered"
     :default-sort="{ prop: 'id', order: 'descending' }"
     empty-text="No hay alumnos. ¡Añade alguno!"
     style="width: 100%"
@@ -58,6 +59,7 @@
     <el-table-column align="right" width="220">
       <template #header>
         <el-input
+          @input="filterTableData"
           :prefix-icon="Search"
           clearable
           placeholder="Buscar..."
@@ -98,6 +100,18 @@
       </template>
     </el-table-column>
   </el-table>
+  <el-pagination
+    @current-change="handleCurrentChange"
+    @size-change="handleSizeChange"
+    :page-sizes="[10, 20, 100]"
+    :total="pagination.total"
+    background
+    class="pagination"
+    hide-on-single-page
+    layout="sizes, prev, pager, next"
+    v-model:page-size="pagination.pageSize"
+  >
+  </el-pagination>
   <StudentForm
     v-if="dialogFormVisible"
     @changeFormVisibility="changeFormVisibility"
@@ -109,7 +123,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useStudentsStore } from '@/stores/students'
 import { storeToRefs } from 'pinia'
 import { Search } from '@element-plus/icons-vue'
@@ -117,20 +131,30 @@ import router from '@/router'
 import StudentForm from '../components/studentForm.vue'
 
 const studentsStore = useStudentsStore()
-const { students } = storeToRefs(studentsStore)
+const { students, loading } = storeToRefs(studentsStore)
 
 const search = ref('')
 const isEdit = ref(false)
 const student = ref({})
 const dialogFormVisible = ref(false)
 const formTitle = ref('Nuevo alumno')
+const pagination = ref({
+  filtered: [],
+  page: 1,
+  pageSize: 10,
+  total: 0
+})
+
+onMounted(() => {
+  filterTableData()
+})
 
 const changeFormVisibility = (visibility) => {
   dialogFormVisible.value = visibility
 }
 
-const filterTableData = computed(() =>
-  students.value.filter(
+const filterTableData = () => {
+  let filtered = students.value.filter(
     (data) =>
       !search.value ||
       data.name.toLowerCase().includes(search.value.toLowerCase()) ||
@@ -138,7 +162,26 @@ const filterTableData = computed(() =>
       data.email.toLowerCase().includes(search.value.toLowerCase()) ||
       data.nif.toLowerCase().includes(search.value.toLowerCase())
   )
-)
+
+  pagination.value.total = filtered.length
+  pagination.value.filtered = filtered.slice(
+    pagination.value.pageSize * pagination.value.page - pagination.value.pageSize,
+    pagination.value.pageSize * pagination.value.page
+  )
+}
+
+const handleSizeChange = () => {
+  filterTableData()
+}
+
+watch(loading, () => {
+  filterTableData()
+})
+
+const handleCurrentChange = (val) => {
+  pagination.value.page = val
+  filterTableData()
+}
 
 const handleNewStudent = () => {
   isEdit.value = false

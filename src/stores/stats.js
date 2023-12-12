@@ -6,6 +6,7 @@ export const useStatsStore = defineStore('stats', () => {
   const loading = ref(true)
 
   async function getStats() {
+    loading.value = true
     await fetch(`${import.meta.env.VITE_API_HOST}/stats`, {
       headers: {
         'Content-type': 'application/json;charset=UTF-8',

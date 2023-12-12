@@ -8,6 +8,7 @@ export const useCoursesStore = defineStore('courses', () => {
   const loading = ref(true)
 
   async function getCourses() {
+    loading.value = true
     await fetch(`${import.meta.env.VITE_API_HOST}/courses`, {
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
@@ -29,6 +30,7 @@ export const useCoursesStore = defineStore('courses', () => {
         courses.value.forEach((course) => {
           course.credits = parseFloat(course.credits)
         })
+        loading.value = false
       })
       .catch((error) => {
         console.log(error)
@@ -53,6 +55,7 @@ export const useCoursesStore = defineStore('courses', () => {
   }
 
   async function addCourse(data) {
+    loading.value = true
     await fetch(`${import.meta.env.VITE_API_HOST}/courses`, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -65,12 +68,14 @@ export const useCoursesStore = defineStore('courses', () => {
       .then((res) => {
         if (res.status === 201) {
           courses.value.unshift(res.data)
+          loading.value = false
         }
       })
       .catch((error) => console.log(error))
   }
 
   async function enrollInCourse(data) {
+    loading.value = true
     await fetch(`${import.meta.env.VITE_API_HOST}/userscourses`, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -94,6 +99,7 @@ export const useCoursesStore = defineStore('courses', () => {
   }
 
   async function updateCourse(data, courseId) {
+    loading.value = true
     await fetch(`${import.meta.env.VITE_API_HOST}/courses/${courseId}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
@@ -116,12 +122,14 @@ export const useCoursesStore = defineStore('courses', () => {
             data['certificate_image2']
           }`
           courses.value[index] = data
+          loading.value = false
         }
       })
       .catch((error) => console.log(error))
   }
 
   async function removeCourse(id) {
+    loading.value = true
     await fetch(`${import.meta.env.VITE_API_HOST}/courses/${id}`, {
       method: 'DELETE',
       headers: {
@@ -133,6 +141,7 @@ export const useCoursesStore = defineStore('courses', () => {
       .then((res) => {
         if (res.status === 200) {
           courses.value = courses.value.filter((item) => item.id !== id)
+          loading.value = false
         }
       })
       .catch((error) => console.log(error))

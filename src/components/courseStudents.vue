@@ -7,7 +7,8 @@
     </div>
   </div>
   <el-table
-    :data="filterTableData"
+    v-loading="loading"
+    :data="students"
     :default-sort="{ prop: 'id', order: 'descending' }"
     empty-text="No hay alumnos. ¡Matricula alguno!"
     style="width: 100%"
@@ -64,11 +65,12 @@
     <el-table-column align="right" width="320">
       <template #header>
         <el-input
+          @input="filterTableData"
           :prefix-icon="Search"
           clearable
           placeholder="Buscar..."
           size="small"
-          v-model="search"
+          v-model="searchInput"
         />
       </template>
       <template #default="scope">
@@ -119,7 +121,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import { storeToRefs } from 'pinia'
 import EnrollStudentForm from '../components/enrollStudentForm.vue'
 import ImportForm from '../components/importForm.vue'
@@ -129,7 +131,7 @@ import { useStudentsStore } from '@/stores/students'
 import { useCourseStudentsStore } from '@/stores/courseStudents'
 import router from '@/router'
 
-const emit = defineEmits(['updateCourse', 'updateStudents'])
+const emit = defineEmits(['updateCourse', 'updateStudents', 'handleSearch'])
 
 const studentsStore = useStudentsStore()
 const courseStudents = useCourseStudentsStore()
@@ -137,27 +139,22 @@ const { usersNotFromCourse } = storeToRefs(studentsStore)
 
 const props = defineProps({
   students: Object,
-  courseId: Number
+  courseId: Number,
+  search: String,
+  loading: Boolean
 })
 
 onBeforeMount(async () => {
   await studentsStore.getUsersToEnroll(props.courseId)
 })
 
-const search = ref('')
+const searchInput = ref(props.search)
 const dialogFormVisible = ref(false)
 const dialogExcelFormVisible = ref(false)
 
-const filterTableData = computed(() =>
-  props.students.filter(
-    (data) =>
-      !search.value ||
-      data.name.toLowerCase().includes(search.value.toLowerCase()) ||
-      data.last_name.toLowerCase().includes(search.value.toLowerCase()) ||
-      data.email.toLowerCase().includes(search.value.toLowerCase()) ||
-      data.nif.toLowerCase().includes(search.value.toLowerCase())
-  )
-)
+const filterTableData = () => {
+  emit('handleSearch', searchInput.value)
+}
 
 const changeFormVisibility = (visibility) => {
   dialogFormVisible.value = visibility
