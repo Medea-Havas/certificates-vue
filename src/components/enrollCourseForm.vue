@@ -1,44 +1,3 @@
-<template>
-  <el-dialog v-model="isVisible" title="Matricular en curso">
-    <el-form ref="ruleFormRef" :model="form" :rules="rules" require-asterisk-position="right">
-      <el-form-item label="Curso" required>
-        <el-select
-          @change="handleCourseChange()"
-          v-model="form.id"
-          placeholder="Seleccionar curso"
-          :class="{ courseIsEmpty: courseIsWrong }"
-        >
-          <el-option
-            v-for="(course, index) in coursesToEnroll"
-            :key="index"
-            :label="`${course.title.substring(0, 60)} ${course.title.length >= 60 ? '...' : ''}`"
-            :value="course.id"
-          />
-        </el-select>
-        <div :class="{ 'el-form-item__error': courseIsWrong, hidden: !courseIsWrong }">
-          El curso es necesario
-        </div>
-      </el-form-item>
-      <el-form-item label="Fecha de examen completado" required prop="date_completed">
-        <el-date-picker
-          v-model="form.date_completed"
-          type="date"
-          format="DD-MM-YYYY"
-          placeholder="Fecha de examen completado"
-          style="width: 100%"
-          value-format="YYYY-MM-DD HH:mm"
-        />
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="hideForm">Cancelar</el-button>
-        <el-button type="primary" @click="handleSubmitForm(ruleFormRef)">Aceptar</el-button>
-      </span>
-    </template>
-  </el-dialog>
-</template>
-
 <script setup>
 import { ref, computed, reactive } from 'vue'
 import { useCoursesStore } from '@/stores/courses'
@@ -107,22 +66,43 @@ const handleSubmitForm = async (formEl) => {
 }
 </script>
 
-<style scoped>
-.courseIsEmpty .select-trigger {
-  border-radius: 4px;
-  box-shadow: 0 0 0 1px red;
-  transition: 0.2s all ease-in;
-}
-.el-form-item__label {
-  justify-content: flex-start;
-}
-.el-form-item.content {
-  width: 100%;
-}
-.el-select {
-  width: 100%;
-}
-.hidden {
-  display: none;
-}
-</style>
+<template>
+  <el-dialog v-model="isVisible" title="Matricular en curso">
+    <el-form ref="ruleFormRef" :model="form" :rules="rules" require-asterisk-position="right">
+      <el-form-item label="Curso" required>
+        <el-select
+          v-model="form.id"
+          @change="handleCourseChange()"
+          :class="{ courseIsEmpty: courseIsWrong }"
+          placeholder="Seleccionar curso"
+        >
+          <el-option
+            v-for="(course, index) in coursesToEnroll"
+            :key="index"
+            :label="`${course.title.substring(0, 60)} ${course.title.length >= 60 ? '...' : ''}`"
+            :value="course.id"
+          />
+        </el-select>
+        <div :class="{ 'el-form-item__error': courseIsWrong, hidden: !courseIsWrong }">
+          El curso es necesario
+        </div>
+      </el-form-item>
+      <el-form-item label="Fecha de examen completado" required prop="date_completed">
+        <el-date-picker
+          v-model="form.date_completed"
+          format="DD-MM-YYYY"
+          placeholder="Fecha de examen completado"
+          style="width: 100%"
+          type="date"
+          value-format="YYYY-MM-DD HH:mm"
+        />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="hideForm">Cancelar</el-button>
+        <el-button @click="handleSubmitForm(ruleFormRef)" type="primary">Aceptar</el-button>
+      </span>
+    </template>
+  </el-dialog>
+</template>

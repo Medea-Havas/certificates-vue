@@ -1,3 +1,11 @@
+<script setup>
+import router from '@/router'
+
+const goToLogin = () => {
+  router.push('/')
+}
+</script>
+
 <template>
   <div>
     <h1>404</h1>
@@ -7,14 +15,6 @@
     <el-button @click="goToLogin">IR A INICIO</el-button>
   </div>
 </template>
-
-<script setup>
-import router from '@/router'
-
-const goToLogin = () => {
-  router.push('/')
-}
-</script>
 
 <style scoped>
 div {

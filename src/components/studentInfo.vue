@@ -1,3 +1,11 @@
+<script setup>
+import moment from 'moment'
+
+const props = defineProps({
+  student: Object
+})
+</script>
+
 <template>
   <div class="cols">
     <div class="left-col">
@@ -36,14 +44,11 @@
   </div>
 </template>
 
-<script setup>
-import moment from 'moment'
-const props = defineProps({
-  student: Object
-})
-</script>
-
 <style scoped>
+.left-col,
+.right-col {
+  width: 100%;
+}
 .cols {
   display: flex;
   flex-wrap: wrap;
@@ -54,10 +59,6 @@ const props = defineProps({
 }
 .cols p span {
   font-weight: bold;
-}
-.left-col,
-.right-col {
-  width: 100%;
 }
 .info {
   margin-bottom: 0.5rem;

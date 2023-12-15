@@ -1,30 +1,10 @@
-<template>
-  <div class="formContainer">
-    <img src="@/assets/certificates-logo.svg" />
-    <div class="form">
-      <el-form ref="ruleFormRef" :model="form" :rules="rules" require-asterisk-position="right">
-        <el-form-item label="Usuario" required prop="user">
-          <el-input v-model="form.user" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="Contraseña" required prop="pass">
-          <el-input v-model="form.pass" autocomplete="off" type="password" show-password />
-        </el-form-item>
-      </el-form>
-      <div class="footer">
-        <el-button type="primary" @click="handleSubmitForm(ruleFormRef)">Entrar</el-button>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { reactive, ref } from 'vue'
 import router from '@/router'
 
-const form = reactive({})
-
 const ruleFormRef = ref()
 
+const form = reactive({})
 const rules = reactive({
   user: [{ required: true, message: 'Usuario necesario', trigger: 'blur' }],
   pass: [{ required: true, message: 'Contraseña necesaria', trigger: 'blur' }]
@@ -50,6 +30,25 @@ const handleSubmitForm = (formEl) => {
 }
 </script>
 
+<template>
+  <div class="formContainer">
+    <img src="@/assets/certificates-logo.svg" />
+    <div class="form">
+      <el-form ref="ruleFormRef" :model="form" :rules="rules" require-asterisk-position="right">
+        <el-form-item label="Usuario" prop="user" required>
+          <el-input v-model="form.user" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="Contraseña" prop="pass" required>
+          <el-input v-model="form.pass" autocomplete="off" show-password type="password" />
+        </el-form-item>
+      </el-form>
+      <div class="footer">
+        <el-button @click="handleSubmitForm(ruleFormRef)" type="primary">Entrar</el-button>
+      </div>
+    </div>
+  </div>
+</template>
+
 <style scoped>
 .el-form-item {
   display: block;
@@ -58,6 +57,9 @@ const handleSubmitForm = (formEl) => {
 }
 .el-form-item:last-child {
   margin-bottom: 2rem;
+}
+.footer button {
+  width: 100%;
 }
 .form {
   background: var(--white);
@@ -72,8 +74,5 @@ const handleSubmitForm = (formEl) => {
 .formContainer img {
   margin: 1rem 20%;
   width: 60%;
-}
-.footer button {
-  width: 100%;
 }
 </style>

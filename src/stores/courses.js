@@ -153,11 +153,11 @@ export const useCoursesStore = defineStore('courses', () => {
     courses,
     coursesNotFromUser,
     loading,
-    getCourses,
-    getCoursesToEnroll,
     addCourse,
     enrollInCourse,
-    updateCourse,
-    removeCourse
+    getCourses,
+    getCoursesToEnroll,
+    removeCourse,
+    updateCourse
   }
 })

@@ -1,36 +1,19 @@
-<template>
-  <el-dialog v-model="isVisible" title="Importar y matricular alumnos">
-    <el-form ref="ruleFormRef" require-asterisk-position="right">
-      <el-form-item class="noFlex" label="Archivo Excel" required>
-        <el-button @click="$refs.excelFile.click()"> Seleccionar archivo </el-button>
-        <input type="file" name="excelFile" id="excelFile" ref="excelFile" @input="changedFile" />
-        <p class="fileName">{{ fileName }}</p>
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="hideForm">Cancelar</el-button>
-        <el-button type="primary" @click="handleSubmitForm(ruleFormRef)">Aceptar</el-button>
-      </span>
-    </template>
-  </el-dialog>
-</template>
 <script setup>
 import { computed, ref } from 'vue'
+import { ElMessage } from 'element-plus'
 import { useRoute } from 'vue-router'
 import readXlsxFile from 'read-excel-file'
-import { ElMessage } from 'element-plus'
 
 const route = useRoute()
-
-const file = ref(null)
-const fileName = ref('')
-const warnMsg = ref(null)
 
 const props = defineProps({
   dialogExcelFormVisible: Boolean
 })
 const emit = defineEmits(['changeExcelFormVisibility', 'updateCourseForm', 'updateStudentsForm'])
+
+const file = ref(null)
+const fileName = ref('')
+const warnMsg = ref(null)
 
 const isVisible = computed({
   get() {
@@ -45,30 +28,8 @@ const changedFile = (e) => {
   file.value = e.target.files[0]
   fileName.value = e.target.files[0].name
 }
-const hideForm = () => {
-  emit('changeExcelFormVisibility', false)
-  file.value = null
-  fileName.value = null
-}
-const handleSubmitForm = () => {
-  readXlsxFile(file.value).then((rows) => {
-    let tempRows = []
-    for (var i = 1; i < rows.length; i++) {
-      let tempRow = {}
-      tempRow.name = rows[i][0]
-      tempRow.last_name = rows[i][1]
-      tempRow.email = rows[i][2]
-      tempRow.nif = rows[i][3]
-      tempRow.course = route.params.id
-      tempRows.push(tempRow)
-    }
-    createAndEnrollUsers(tempRows)
-    file.value = null
-    fileName.value = null
-  })
-}
 
-async function createAndEnrollUsers(data) {
+const createAndEnrollUsers = async (data) => {
   await fetch(`${import.meta.env.VITE_API_HOST}/loadusers`, {
     method: 'POST',
     body: JSON.stringify(data),
@@ -93,7 +54,49 @@ async function createAndEnrollUsers(data) {
     })
     .catch((error) => console.log(error))
 }
+
+const hideForm = () => {
+  emit('changeExcelFormVisibility', false)
+  file.value = null
+  fileName.value = null
+}
+
+const handleSubmitForm = () => {
+  readXlsxFile(file.value).then((rows) => {
+    let tempRows = []
+    for (var i = 1; i < rows.length; i++) {
+      let tempRow = {}
+      tempRow.name = rows[i][0]
+      tempRow.last_name = rows[i][1]
+      tempRow.email = rows[i][2]
+      tempRow.nif = rows[i][3]
+      tempRow.course = route.params.id
+      tempRows.push(tempRow)
+    }
+    createAndEnrollUsers(tempRows)
+    file.value = null
+    fileName.value = null
+  })
+}
 </script>
+
+<template>
+  <el-dialog v-model="isVisible" title="Importar y matricular alumnos">
+    <el-form ref="ruleFormRef" require-asterisk-position="right">
+      <el-form-item label="Archivo Excel" class="noFlex" required>
+        <el-button @click="$refs.excelFile.click()"> Seleccionar archivo </el-button>
+        <input ref="excelFile" @input="changedFile" id="excelFile" name="excelFile" type="file" />
+        <p class="fileName">{{ fileName }}</p>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="hideForm">Cancelar</el-button>
+        <el-button @click="handleSubmitForm(ruleFormRef)" type="primary">Aceptar</el-button>
+      </span>
+    </template>
+  </el-dialog>
+</template>
 
 <style scoped>
 #excelFile {

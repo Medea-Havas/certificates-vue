@@ -213,6 +213,11 @@ body .el-pagination.is-background .el-pager li.is-active {
 body .el-pager li:hover {
   color: var(--steelblue);
 }
+.courseIsEmpty .select-trigger {
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px red;
+  transition: 0.2s all ease-in;
+}
 .el-popper .el-select-dropdown__item.selected {
   color: var(--steelblue);
 }

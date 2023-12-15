@@ -2,8 +2,8 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useTemplatesStore = defineStore('templates', () => {
-  const templates = ref({})
   const loading = ref(true)
+  const templates = ref({})
 
   async function getTemplates() {
     return await fetch(`${import.meta.env.VITE_API_HOST}/templates`, {
@@ -79,11 +79,11 @@ export const useTemplatesStore = defineStore('templates', () => {
   getTemplates()
 
   return {
-    templates,
     loading,
-    getTemplates,
+    templates,
     addTemplate,
-    updateTemplate,
-    removeTemplate
+    getTemplates,
+    removeTemplate,
+    updateTemplate
   }
 })

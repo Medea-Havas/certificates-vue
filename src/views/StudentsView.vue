@@ -1,151 +1,31 @@
-<template>
-  <div class="header">
-    <h2>Alumnos</h2>
-    <div>
-      <el-button tabindex="0" @click="handleNewStudent">+ Nuevo alumno</el-button>
-    </div>
-  </div>
-  <el-table
-    v-loading="loading"
-    :data="pagination.filtered"
-    :default-sort="{ prop: 'id', order: 'descending' }"
-    empty-text="No hay alumnos. ¡Añade alguno!"
-    style="width: 100%"
-  >
-    <el-table-column prop="name" label="Nombre" sortable width="180">
-      <template #default="scope">
-        <el-tooltip
-          class="box-item"
-          effect="dark"
-          :content="scope.row.name"
-          placement="top-start"
-          trigger="click"
-        >
-          <span class="ellipsis">{{ scope.row.name }}</span>
-        </el-tooltip>
-      </template>
-    </el-table-column>
-    <el-table-column prop="last_name" label="Apellidos" sortable width="250">
-      <template #default="scope">
-        <el-tooltip
-          class="box-item"
-          effect="dark"
-          :content="scope.row.last_name"
-          placement="top-start"
-          trigger="click"
-        >
-          <span class="ellipsis">{{ scope.row.last_name }}</span>
-        </el-tooltip>
-      </template>
-    </el-table-column>
-    <el-table-column prop="email" label="Email" sortable width="260">
-      <template #default="scope">
-        <el-tooltip
-          class="box-item"
-          effect="dark"
-          :content="scope.row.email"
-          placement="top-start"
-          trigger="click"
-        >
-          <span class="ellipsis">{{ scope.row.email }}</span>
-        </el-tooltip>
-      </template>
-    </el-table-column>
-    <el-table-column prop="nif" label="NIF" sortable width="130">
-      <template #default="scope">
-        {{ scope.row.nif }}
-      </template>
-    </el-table-column>
-    <el-table-column align="right" width="220">
-      <template #header>
-        <el-input
-          @input="filterTableData"
-          :prefix-icon="Search"
-          clearable
-          placeholder="Buscar..."
-          size="small"
-          v-model="search"
-        />
-      </template>
-      <template #default="scope">
-        <div class="buttons">
-          <el-button
-            size="small"
-            @click="handleView(scope.row)"
-            @keyup.space="handleView(scope.row)"
-            tabindex="0"
-            >Ver</el-button
-          >
-          <el-button
-            size="small"
-            @click="handleEdit(scope.row)"
-            @keyup.space="handleEdit(scope.row)"
-            tabindex="0"
-            >Editar</el-button
-          >
-          <el-popconfirm
-            @confirm="handleDelete(scope.row)"
-            cancel-button-text="No, gracias"
-            confirm-button-text="Sí"
-            icon-color="red"
-            title="¿BORRAR ALUMNO?"
-            width="200"
-            icon="WarningFilled"
-          >
-            <template #reference>
-              <el-button size="small" type="danger" tabindex="0">Borrar</el-button>
-            </template>
-          </el-popconfirm>
-        </div>
-      </template>
-    </el-table-column>
-  </el-table>
-  <el-pagination
-    @current-change="handleCurrentChange"
-    @size-change="handleSizeChange"
-    :page-sizes="[10, 20, 100]"
-    :total="pagination.total"
-    background
-    class="pagination"
-    hide-on-single-page
-    layout="sizes, prev, pager, next"
-    v-model:page-size="pagination.pageSize"
-  >
-  </el-pagination>
-  <StudentForm
-    v-if="dialogFormVisible"
-    @changeFormVisibility="changeFormVisibility"
-    :title="formTitle"
-    :isEdit="isEdit"
-    :student="student"
-    :dialogFormVisible="dialogFormVisible"
-  />
-</template>
-
 <script setup>
 import { onMounted, ref, watch } from 'vue'
-import { useStudentsStore } from '@/stores/students'
 import { storeToRefs } from 'pinia'
+import { useStudentsStore } from '@/stores/students'
 import { Search } from '@element-plus/icons-vue'
-import router from '@/router'
 import StudentForm from '../components/studentForm.vue'
+import router from '@/router'
 
 const studentsStore = useStudentsStore()
 const { students, loading } = storeToRefs(studentsStore)
 
-const search = ref('')
-const isEdit = ref(false)
-const student = ref({})
+onMounted(() => {
+  filterTableData()
+})
+
 const dialogFormVisible = ref(false)
 const formTitle = ref('Nuevo alumno')
+const isEdit = ref(false)
 const pagination = ref({
   filtered: [],
   page: 1,
   pageSize: 10,
   total: 0
 })
+const search = ref('')
+const student = ref({})
 
-onMounted(() => {
+watch(loading, () => {
   filterTableData()
 })
 
@@ -170,17 +50,20 @@ const filterTableData = () => {
   )
 }
 
-const handleSizeChange = () => {
-  filterTableData()
-}
-
-watch(loading, () => {
-  filterTableData()
-})
-
 const handleCurrentChange = (val) => {
   pagination.value.page = val
   filterTableData()
+}
+
+const handleDelete = (row) => {
+  studentsStore.removeStudent(row.id)
+}
+
+const handleEdit = (row) => {
+  isEdit.value = true
+  formTitle.value = 'Editar alumno'
+  student.value = row
+  dialogFormVisible.value = true
 }
 
 const handleNewStudent = () => {
@@ -190,25 +73,135 @@ const handleNewStudent = () => {
   student.value = {}
 }
 
+const handleSizeChange = () => {
+  filterTableData()
+}
+
 const handleView = (row) => {
   router.push(`/alumno/${row.id}`)
 }
-const handleEdit = (row) => {
-  isEdit.value = true
-  formTitle.value = 'Editar alumno'
-  student.value = row
-  dialogFormVisible.value = true
-}
-const handleDelete = (row) => {
-  studentsStore.removeStudent(row.id)
-}
 </script>
 
-<style scoped>
-.header {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 3rem;
-}
-</style>
+<template>
+  <div class="header">
+    <h2>Alumnos</h2>
+    <div>
+      <el-button @click="handleNewStudent" tabindex="0">+ Nuevo alumno</el-button>
+    </div>
+  </div>
+  <el-table
+    v-loading="loading"
+    :data="pagination.filtered"
+    :default-sort="{ prop: 'id', order: 'descending' }"
+    empty-text="No hay alumnos. ¡Añade alguno!"
+    style="width: 100%"
+  >
+    <el-table-column label="Nombre" prop="name" sortable width="180">
+      <template #default="scope">
+        <el-tooltip
+          :content="scope.row.name"
+          class="box-item"
+          effect="dark"
+          placement="top-start"
+          trigger="click"
+        >
+          <span class="ellipsis">{{ scope.row.name }}</span>
+        </el-tooltip>
+      </template>
+    </el-table-column>
+    <el-table-column label="Apellidos" prop="last_name" sortable width="250">
+      <template #default="scope">
+        <el-tooltip
+          :content="scope.row.last_name"
+          class="box-item"
+          effect="dark"
+          placement="top-start"
+          trigger="click"
+        >
+          <span class="ellipsis">{{ scope.row.last_name }}</span>
+        </el-tooltip>
+      </template>
+    </el-table-column>
+    <el-table-column label="Email" prop="email" sortable width="260">
+      <template #default="scope">
+        <el-tooltip
+          :content="scope.row.email"
+          class="box-item"
+          effect="dark"
+          placement="top-start"
+          trigger="click"
+        >
+          <span class="ellipsis">{{ scope.row.email }}</span>
+        </el-tooltip>
+      </template>
+    </el-table-column>
+    <el-table-column label="NIF" prop="nif" sortable width="130">
+      <template #default="scope">
+        {{ scope.row.nif }}
+      </template>
+    </el-table-column>
+    <el-table-column align="right" width="220">
+      <template #header>
+        <el-input
+          @input="filterTableData"
+          :prefix-icon="Search"
+          clearable
+          placeholder="Buscar..."
+          size="small"
+          v-model="search"
+        />
+      </template>
+      <template #default="scope">
+        <div class="buttons">
+          <el-button
+            @click="handleView(scope.row)"
+            @keyup.space="handleView(scope.row)"
+            size="small"
+            tabindex="0"
+            >Ver</el-button
+          >
+          <el-button
+            @click="handleEdit(scope.row)"
+            @keyup.space="handleEdit(scope.row)"
+            size="small"
+            tabindex="0"
+            >Editar</el-button
+          >
+          <el-popconfirm
+            @confirm="handleDelete(scope.row)"
+            cancel-button-text="No, gracias"
+            confirm-button-text="Sí"
+            icon="WarningFilled"
+            icon-color="red"
+            title="¿BORRAR ALUMNO?"
+            width="200"
+          >
+            <template #reference>
+              <el-button size="small" tabindex="0" type="danger">Borrar</el-button>
+            </template>
+          </el-popconfirm>
+        </div>
+      </template>
+    </el-table-column>
+  </el-table>
+  <el-pagination
+    v-model:page-size="pagination.pageSize"
+    @current-change="handleCurrentChange"
+    @size-change="handleSizeChange"
+    :page-sizes="[10, 20, 100]"
+    :total="pagination.total"
+    background
+    class="pagination"
+    hide-on-single-page
+    layout="sizes, prev, pager, next"
+  >
+  </el-pagination>
+  <StudentForm
+    v-if="dialogFormVisible"
+    @changeFormVisibility="changeFormVisibility"
+    :dialogFormVisible="dialogFormVisible"
+    :isEdit="isEdit"
+    :student="student"
+    :title="formTitle"
+  />
+</template>

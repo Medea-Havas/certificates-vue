@@ -2,8 +2,8 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useStudentCoursesStore = defineStore('studentCourses', () => {
-  const studentCourses = ref([])
   const loading = ref(true)
+  const studentCourses = ref([])
 
   async function getStudentCourses(studentId) {
     loading.value = true
@@ -42,5 +42,5 @@ export const useStudentCoursesStore = defineStore('studentCourses', () => {
       .catch((error) => console.log(error))
   }
 
-  return { studentCourses, getStudentCourses, removeStudentCourse, loading }
+  return { loading, studentCourses, getStudentCourses, removeStudentCourse }
 })

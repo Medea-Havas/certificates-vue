@@ -61,6 +61,10 @@ onBeforeMount(async () => {
   filterTableData()
 })
 
+const changeTab = () => {
+  sessionStorage.setItem('studentTabs', activeName.value)
+}
+
 const filterTableData = () => {
   let filtered = studentCourses.value.filter(
     (data) =>
@@ -76,7 +80,8 @@ const filterTableData = () => {
   )
 }
 
-const handleSizeChange = () => {
+const handleCurrentChange = (val) => {
+  pagination.value.page = val
   filterTableData()
 }
 
@@ -85,13 +90,8 @@ const handleSearch = (searchTerm) => {
   filterTableData()
 }
 
-const handleCurrentChange = (val) => {
-  pagination.value.page = val
+const handleSizeChange = () => {
   filterTableData()
-}
-
-const changeTab = () => {
-  sessionStorage.setItem('studentTabs', activeName.value)
 }
 </script>
 

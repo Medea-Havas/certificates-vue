@@ -1,3 +1,45 @@
+<script setup>
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import CryptoJS from 'crypto-js'
+import moment from 'moment'
+
+onMounted(() => {
+  decrypted.value = decryptWithAES(cvs)
+  if (decrypted.value) {
+    userId.value = decrypted.value.split('CVS')[0]
+    courseId.value = decrypted.value.split('CVS')[1]
+    fetch(`${import.meta.env.VITE_API_HOST}/report/${userId.value}/${courseId.value}`)
+      .then((info) => info.json())
+      .then((info) => {
+        data.value = info
+      })
+  } else {
+    error.value = true
+  }
+})
+
+const route = useRoute()
+const cvs = route.query.cvs
+
+const courseId = ref('')
+const data = ref('')
+const decrypted = ref('')
+const error = ref(false)
+const userId = ref('')
+
+const decryptWithAES = (ciphertext) => {
+  if (!ciphertext) {
+    return null
+  } else {
+    const passphrase = 'integracion'
+    const bytes = CryptoJS.AES.decrypt(ciphertext.replaceAll('-', '+'), passphrase)
+    const originalText = bytes.toString(CryptoJS.enc.Utf8)
+    return originalText
+  }
+}
+</script>
+
 <template>
   <div className="sectionHeader">
     <h1>
@@ -6,8 +48,8 @@
     </h1>
   </div>
   <div class="container">
-    <div class="content" v-if="error" style="text-align: center">Error. No hay datos.</div>
-    <div class="content" v-if="!error">
+    <div v-if="error" class="content" style="text-align: center">Error. No hay datos.</div>
+    <div v-if="!error" class="content">
       <div class="datafields">
         <h2>Curso</h2>
         <p>{{ data.title }}</p>
@@ -62,47 +104,7 @@
     </div>
   </div>
 </template>
-<script setup>
-import { onMounted, ref } from 'vue'
-import CryptoJS from 'crypto-js'
-import { useRoute } from 'vue-router'
-import moment from 'moment'
 
-const route = useRoute()
-
-const cvs = route.query.cvs
-const decrypted = ref('')
-const userId = ref('')
-const courseId = ref('')
-const data = ref('')
-const error = ref(false)
-
-onMounted(() => {
-  decrypted.value = decryptWithAES(cvs)
-  if (decrypted.value) {
-    userId.value = decrypted.value.split('CVS')[0]
-    courseId.value = decrypted.value.split('CVS')[1]
-    fetch(`${import.meta.env.VITE_API_HOST}/report/${userId.value}/${courseId.value}`)
-      .then((info) => info.json())
-      .then((info) => {
-        data.value = info
-      })
-  } else {
-    error.value = true
-  }
-})
-
-const decryptWithAES = (ciphertext) => {
-  if (!ciphertext) {
-    return null
-  } else {
-    const passphrase = 'integracion'
-    const bytes = CryptoJS.AES.decrypt(ciphertext.replaceAll('-', '+'), passphrase)
-    const originalText = bytes.toString(CryptoJS.enc.Utf8)
-    return originalText
-  }
-}
-</script>
 <style scoped>
 h1 {
   color: var(--blue);
@@ -198,9 +200,9 @@ h2 {
   }
   .datafields h2 {
     background: rgba(255, 255, 255, 0.4);
+    border-radius: 10px 0 0 10px;
     color: inherit;
     padding: 1.25rem;
-    border-radius: 10px 0 0 10px;
   }
 }
 @media (min-width: 400px) {

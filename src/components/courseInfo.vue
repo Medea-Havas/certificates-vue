@@ -1,3 +1,11 @@
+<script setup>
+import moment from 'moment'
+
+const props = defineProps({
+  course: Object
+})
+</script>
+
 <template>
   <div class="cols">
     <div class="left-col">
@@ -107,21 +115,10 @@
   </div>
 </template>
 
-<script setup>
-import moment from 'moment'
-
-const props = defineProps({
-  course: Object
-})
-</script>
-
 <style scoped>
-.titles {
-  margin: 0.25rem;
-}
-.highlighted {
-  font-weight: 500;
-  margin: 0.75rem 0;
+.left-col,
+.right-col {
+  width: 100%;
 }
 .cols {
   display: flex;
@@ -134,14 +131,15 @@ const props = defineProps({
 .cols p span {
   font-weight: bold;
 }
+.highlighted {
+  font-weight: 500;
+  margin: 0.75rem 0;
+}
 .info {
   margin-bottom: 0.5rem;
 }
 .info-content {
   white-space: pre-wrap;
-}
-.info-images {
-  margin-top: 1rem;
 }
 .info-image {
   margin: 1rem 0 1.5rem;
@@ -154,9 +152,11 @@ const props = defineProps({
   max-width: 32rem;
   width: 100%;
 }
-.left-col,
-.right-col {
-  width: 100%;
+.info-images {
+  margin-top: 1rem;
+}
+.titles {
+  margin: 0.25rem;
 }
 @media screen and (min-width: 1048px) {
   .left-col,

@@ -40,5 +40,5 @@ export const useCourseStudentsStore = defineStore('courseStudents', () => {
       .catch((error) => console.log(error))
   }
 
-  return { courseStudents, getCourseStudents, removeCourseStudent, loading }
+  return { courseStudents, loading, getCourseStudents, removeCourseStudent }
 })

@@ -1,46 +1,13 @@
-<template>
-  <h2>
-    {{ course.title }} <el-tag>ID: {{ route.params.id }}</el-tag>
-  </h2>
-  <el-tabs v-model="activeName" class="courseTabs" @tab-change="changeTab">
-    <el-tab-pane label="Información" name="information">
-      <CourseInfo :course="course" />
-    </el-tab-pane>
-    <el-tab-pane label="Alumnos" name="users">
-      <CourseStudents
-        :loading="loading"
-        :students="pagination.filtered"
-        :courseId="parseInt(route.params.id)"
-        :search="search"
-        @updateCourse="updateCourse"
-        @updateStudents="updateStudents"
-        @handleSearch="handleSearch"
-      />
-      <el-pagination
-        v-if="!loading"
-        @current-change="handleCurrentChange"
-        @size-change="handleSizeChange"
-        :page-sizes="[10, 20, 100]"
-        :total="pagination.total"
-        background
-        class="pagination"
-        hide-on-single-page
-        layout="sizes, prev, pager, next"
-        v-model:page-size="pagination.pageSize"
-      />
-    </el-tab-pane>
-  </el-tabs>
-</template>
-
 <script setup>
 import { ref, onBeforeMount } from 'vue'
-import CourseInfo from '../components/courseInfo.vue'
-import CourseStudents from '../components/courseStudents.vue'
+import { storeToRefs } from 'pinia'
 import { useCourseStore } from '@/stores/course'
 import { useCourseStudentsStore } from '@/stores/courseStudents'
 import { useStudentsStore } from '@/stores/students'
-import { storeToRefs } from 'pinia'
+import CourseInfo from '../components/courseInfo.vue'
+import CourseStudents from '../components/courseStudents.vue'
 import { useRoute } from 'vue-router'
+
 const route = useRoute()
 
 const courseStore = useCourseStore()
@@ -55,13 +22,18 @@ onBeforeMount(async () => {
   filterTableData()
 })
 
-const search = ref('')
+const activeName = ref(sessionStorage.getItem('courseTabs') || 'information')
 const pagination = ref({
   filtered: [],
   page: 1,
   pageSize: 10,
   total: 0
 })
+const search = ref('')
+
+const changeTab = () => {
+  sessionStorage.setItem('courseTabs', activeName.value)
+}
 
 const filterTableData = () => {
   let filtered = courseStudents.value.filter(
@@ -79,7 +51,9 @@ const filterTableData = () => {
     pagination.value.pageSize * pagination.value.page
   )
 }
-const handleSizeChange = () => {
+
+const handleCurrentChange = (val) => {
+  pagination.value.page = val
   filterTableData()
 }
 
@@ -88,15 +62,8 @@ const handleSearch = (searchTerm) => {
   filterTableData()
 }
 
-const handleCurrentChange = (val) => {
-  pagination.value.page = val
+const handleSizeChange = () => {
   filterTableData()
-}
-
-const activeName = ref(sessionStorage.getItem('courseTabs') || 'information')
-
-const changeTab = () => {
-  sessionStorage.setItem('courseTabs', activeName.value)
 }
 
 const updateCourse = () => {
@@ -106,6 +73,40 @@ const updateStudents = () => {
   studentsStore.getStudents()
 }
 </script>
+
+<template>
+  <h2>
+    {{ course.title }} <el-tag>ID: {{ route.params.id }}</el-tag>
+  </h2>
+  <el-tabs v-model="activeName" @tab-change="changeTab" class="courseTabs">
+    <el-tab-pane label="Información" name="information">
+      <CourseInfo :course="course" />
+    </el-tab-pane>
+    <el-tab-pane label="Alumnos" name="users">
+      <CourseStudents
+        @updateCourse="updateCourse"
+        @updateStudents="updateStudents"
+        @handleSearch="handleSearch"
+        :courseId="parseInt(route.params.id)"
+        :loading="loading"
+        :search="search"
+        :students="pagination.filtered"
+      />
+      <el-pagination
+        v-if="!loading"
+        v-model:page-size="pagination.pageSize"
+        @current-change="handleCurrentChange"
+        @size-change="handleSizeChange"
+        :page-sizes="[10, 20, 100]"
+        :total="pagination.total"
+        background
+        class="pagination"
+        hide-on-single-page
+        layout="sizes, prev, pager, next"
+      />
+    </el-tab-pane>
+  </el-tabs>
+</template>
 
 <style scoped>
 h2 {

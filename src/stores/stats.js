@@ -2,8 +2,8 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useStatsStore = defineStore('stats', () => {
-  const stats = ref({})
   const loading = ref(true)
+  const stats = ref({})
 
   async function getStats() {
     loading.value = true
@@ -25,5 +25,5 @@ export const useStatsStore = defineStore('stats', () => {
 
   getStats()
 
-  return { stats, loading, getStats }
+  return { loading, stats, getStats }
 })

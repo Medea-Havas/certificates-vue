@@ -1,19 +1,18 @@
 <script setup>
-import { RouterView } from 'vue-router'
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
+import { RouterView, useRoute } from 'vue-router'
 import router from '@/router'
-import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const width = ref(window.innerWidth)
+
+onMounted(() => {
+  window.addEventListener('resize', onResize)
+  checkMobile()
+})
 
 const isCollapsed = ref(false)
 const isMobile = ref(false)
-
-const onResize = () => {
-  width.value = window.innerWidth
-  checkMobile()
-}
+const width = ref(window.innerWidth)
 
 const checkMobile = () => {
   if (width.value <= 500) {
@@ -28,43 +27,43 @@ const checkMobile = () => {
   }
 }
 
+const onResize = () => {
+  width.value = window.innerWidth
+  checkMobile()
+}
+
 const open = (route) => {
   router.push(route)
 }
-
-onMounted(() => {
-  window.addEventListener('resize', onResize)
-  checkMobile()
-})
 </script>
 
 <template>
   <div
-    class="app"
     v-if="route.path != '/informe' && route.path != '/login' && route.path != '/404'"
+    class="app"
   >
     <el-container>
       <el-aside :class="{ collapsed: isCollapsed, mobile: isMobile }" width="200px">
-        <el-menu router :collapse="isCollapsed" ref="mainMenu">
+        <el-menu ref="mainMenu" :collapse="isCollapsed" router>
           <el-menu-item @click="isCollapsed = !isCollapsed" class="right">
             <el-icon><Plus v-if="isCollapsed" /><Close v-if="!isCollapsed" /></el-icon>
           </el-menu-item>
           <hr />
-          <el-menu-item index="/" route="/" tabindex="0" @keyup.space="open('/')">
+          <el-menu-item @keyup.space="open('/')" index="/" route="/" tabindex="0">
             <el-icon><HomeFilled /></el-icon>
             <span>Inicio</span>
           </el-menu-item>
           <hr />
-          <el-menu-item index="/cursos" route="/cursos" tabindex="0" @keyup.space="open('/cursos')">
+          <el-menu-item @keyup.space="open('/cursos')" index="/cursos" route="/cursos" tabindex="0">
             <el-icon><Menu /></el-icon>
             <span>Cursos</span>
           </el-menu-item>
           <hr />
           <el-menu-item
+            @keyup.space="open('/alumnos')"
             index="/alumnos"
             route="/alumnos"
             tabindex="0"
-            @keyup.space="open('/alumnos')"
           >
             <el-icon><OfficeBuilding /></el-icon>
             <span>Alumnos</span>
@@ -85,13 +84,13 @@ onMounted(() => {
       </el-container>
     </el-container>
   </div>
-  <div class="report" v-if="route.path == '/informe'">
+  <div v-if="route.path == '/informe'" class="report">
     <RouterView />
   </div>
-  <div class="login" v-if="route.path == '/login'">
+  <div v-if="route.path == '/login'" class="login">
     <RouterView />
   </div>
-  <div class="notfound" v-if="route.path == '/404'">
+  <div v-if="route.path == '/404'" class="notfound">
     <RouterView />
   </div>
 </template>
@@ -101,19 +100,34 @@ h1 {
   line-height: 1;
   font-size: 19px;
 }
+.el-menu-item:hover,
+.el-menu-item.is-active,
+.el-menu-item:focus {
+  background: var(--steelbluelowlight);
+  color: white;
+  box-shadow: 0px 2px 4px -1px var(--steelbluelowlight);
+}
+.login,
+.notfound {
+  height: 100vh;
+  width: 100%;
+}
+.collapsed .right {
+  justify-content: center;
+}
 .el-aside {
   position: relative;
   overflow: hidden;
   width: unset;
   z-index: 2;
 }
-.el-aside.mobile {
-  position: absolute;
-}
 .el-aside.collapsed ul {
   align-items: center;
   display: flex;
   flex-direction: column;
+}
+.el-aside.mobile {
+  position: absolute;
 }
 .el-footer {
   background: #f8cacc;
@@ -164,13 +178,6 @@ h1 {
 .el-menu-item i {
   margin-right: 0.5rem;
 }
-.el-menu-item:hover,
-.el-menu-item.is-active,
-.el-menu-item:focus {
-  background: var(--steelbluelowlight);
-  color: white;
-  box-shadow: 0px 2px 4px -1px var(--steelbluelowlight);
-}
 .el-menu-item.right {
   fill-opacity: 0.6;
 }
@@ -179,14 +186,6 @@ h1 {
   box-shadow: none;
   color: var(--steelbluelowlight);
   fill-opacity: 1;
-}
-.collapsed .right {
-  justify-content: center;
-}
-.login,
-.notfound {
-  height: 100vh;
-  width: 100%;
 }
 .login {
   align-items: center;

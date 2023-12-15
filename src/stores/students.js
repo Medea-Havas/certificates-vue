@@ -2,10 +2,10 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useStudentsStore = defineStore('students', () => {
+  const loading = ref(true)
   const students = ref([])
   const studentsLength = ref(0)
   const usersNotFromCourse = ref([])
-  const loading = ref(true)
 
   async function getStudents() {
     loading.value = true
@@ -109,14 +109,14 @@ export const useStudentsStore = defineStore('students', () => {
   getStudents()
 
   return {
-    students,
-    usersNotFromCourse,
     loading,
+    students,
     studentsLength,
+    usersNotFromCourse,
+    addStudent,
     getStudents,
     getUsersToEnroll,
-    addStudent,
-    updateStudent,
-    removeStudent
+    removeStudent,
+    updateStudent
   }
 })

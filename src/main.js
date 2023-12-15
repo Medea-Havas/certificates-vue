@@ -1,13 +1,13 @@
-import './assets/main.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import ElementPlus from 'element-plus'
-import es from 'element-plus/dist/locale/es.mjs'
-import dayjs from 'dayjs'
-import 'element-plus/dist/index.css'
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import App from './App.vue'
 import router from './router'
+import dayjs from 'dayjs'
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import es from 'element-plus/dist/locale/es.mjs'
+import './assets/main.css'
 
 dayjs.Ls.es ??= {}
 dayjs.Ls.es.weekStart = 1
