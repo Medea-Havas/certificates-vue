@@ -67,7 +67,10 @@ export const useCoursesStore = defineStore('courses', () => {
       .then((response) => response.json())
       .then((res) => {
         if (res.status === 201) {
-          courses.value.unshift(res.data)
+          let tempData = res.data
+          tempData['template'] = data.template
+          tempData['template_id'] = data.template_id
+          courses.value.unshift(tempData)
           loading.value = false
         }
       })

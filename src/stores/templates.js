@@ -70,7 +70,7 @@ export const useTemplatesStore = defineStore('templates', () => {
       .then((response) => response.json())
       .then((res) => {
         if (res.status === 200) {
-          templates.value = templates.value.filter((item) => item.id !== id).title
+          templates.value = templates.value.filter((item) => item.id !== id)
         }
       })
       .catch((error) => console.log(error))

@@ -42,6 +42,7 @@ const ruleFormRef = ref()
 const templateIsWrong = ref(false)
 const thumbFileList = ref([])
 const thumbnailIsWrong = ref(false)
+const headers = ref({ Token: 'Bearer ' + sessionStorage.getItem('token') })
 
 if (props.isEdit) {
   form.id = props.course.id
@@ -128,6 +129,7 @@ const handleSubmitForm = async (formEl) => {
   await formEl.validate((valid) => {
     if (valid && !templateIsWrong.value && !thumbnailIsWrong.value && !imageIsWrong.value) {
       if (props.isEdit) {
+        console.log('hey')
         coursesStore.updateCourse(form, props.course.id)
       } else {
         coursesStore.addCourse(form)
@@ -144,7 +146,7 @@ const handleSubmitForm = async (formEl) => {
 const handleTemplateChange = () => {
   templateIsWrong.value = form.template_id == '' ? true : false
   if (form.template_id != '') {
-    console.log('hey')
+    console.log(form.template_id)
     form.template = templatesStore.templates.filter((data) => data.id == form.template_id)[0].title
   }
 }
@@ -238,6 +240,7 @@ const rules = reactive({
         <el-upload
           v-model:file-list="thumbFileList"
           :action="thumb_path"
+          :headers="headers"
           :class="{ thumbIsEmpty: thumbnailIsWrong }"
           :limit="1"
           :on-change="handleThumbnailChange"
@@ -255,6 +258,7 @@ const rules = reactive({
         <el-upload
           v-model:file-list="imageFileList"
           :action="image_path"
+          :headers="headers"
           :class="{ imageIsEmpty: imageIsWrong }"
           :limit="1"
           :on-change="handleImageChange"
@@ -272,6 +276,7 @@ const rules = reactive({
         <el-upload
           v-model:file-list="image2FileList"
           :action="image2_path"
+          :headers="headers"
           :limit="1"
           :on-success="handleCertificateImg2"
           name="certificate_image2"
