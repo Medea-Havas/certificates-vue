@@ -16,6 +16,12 @@ const emit = defineEmits(['changeFormVisibility', 'updateCourseForm'])
 
 const ruleFormRef = ref()
 const studentIsWrong = ref(false)
+const userIds = ref({})
+const studentList = ref([])
+studentList.value = props.studentsToEnroll.map((element) => ({
+  value: element.id,
+  label: `${element.name} ${element.last_name}`
+}))
 
 const isVisible = computed({
   get() {
@@ -26,21 +32,17 @@ const isVisible = computed({
   }
 })
 
+const form = reactive({
+  date_completed: ''
+})
 const rules = reactive({
   date_completed: [{ required: true, message: 'Fecha de completado necesaria', trigger: 'change' }]
 })
 
-const form = reactive({
-  userId: '',
-  name: '',
-  date_completed: ''
-})
-
-const handleCourseChange = (e) => {
-  console.log(e)
-  studentIsWrong.value = form.id == '' ? true : false
-  const selectedUser = props.studentsToEnroll.filter((student) => student.id == form.userId)[0]
-  form.name = `${selectedUser.name} ${selectedUser.last_name}`
+const handleCourseChange = () => {
+  studentIsWrong.value = true
+  if (!userIds.value.length) return
+  studentIsWrong.value = false
 }
 
 const hideForm = () => {
@@ -49,29 +51,39 @@ const hideForm = () => {
 
 const handleSubmitForm = async (formEl) => {
   formEl.validate((valid) => {
+    handleCourseChange()
     if (!(valid && !studentIsWrong.value)) return
+    userIds.value.forEach((userId) => {
+      const enrollData = {
+        user_id: userId,
+        course_id: route.params.id,
+        date_completed: form.date_completed,
+        date_created: moment()
+      }
+      coursesStore.enrollInCourse(enrollData)
+    })
+    emit('updateCourseForm')
+    userIds.value = {}
+    form.date_completed = ''
+    emit('changeFormVisibility', false)
   })
-  handleCourseChange()
-  const enrollData = {
-    user_id: form.userId,
-    course_id: route.params.id,
-    date_completed: form.date_completed,
-    date_created: moment()
-  }
-  await coursesStore.enrollInCourse(enrollData)
-  emit('updateCourseForm')
-  form.id = ''
-  form.title = ''
-  form.date_completed = ''
-  emit('changeFormVisibility', false)
 }
 </script>
 
 <template>
   <el-dialog v-model="isVisible" title="Matricular estudiante">
     <el-form ref="ruleFormRef" :model="form" :rules="rules" require-asterisk-position="right">
-      <el-form-item label="Estudiante" required>
-        <el-select
+      <el-form-item :class="{ studentIsEmpty: studentIsWrong }" label="Estudiante" required>
+        <el-select-v2
+          v-model="userIds"
+          @change="handleCourseChange(e)"
+          :options="studentList"
+          filterable
+          multiple
+          placeholder="Seleccionar estudiante"
+          style="width: 100%"
+        />
+        <!-- <el-select
           v-model="form.userId"
           @change="handleCourseChange(e)"
           :class="{ studentIsEmpty: studentIsWrong }"
@@ -83,7 +95,7 @@ const handleSubmitForm = async (formEl) => {
             :label="`${student.name} ${student.last_name}`"
             :value="student.id"
           />
-        </el-select>
+        </el-select> -->
         <div :class="{ 'el-form-item__error': studentIsWrong, hidden: !studentIsWrong }">
           El estudiante es necesario
         </div>
@@ -107,3 +119,9 @@ const handleSubmitForm = async (formEl) => {
     </template>
   </el-dialog>
 </template>
+
+<style>
+.studentIsEmpty .el-select-v2__wrapper {
+  border: 1px solid var(--el-color-danger) !important;
+}
+</style>

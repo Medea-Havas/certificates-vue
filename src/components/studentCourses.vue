@@ -22,7 +22,7 @@ const props = defineProps({
   search: String,
   loading: Boolean
 })
-const emit = defineEmits(['handleSearch'])
+const emit = defineEmits(['handleSearch', 'updateStudentCourses'])
 
 onBeforeMount(async () => {
   await studentCoursesStore.getStudentCourses(route.params.id)
@@ -47,11 +47,16 @@ const handleNewEnroll = () => {
 
 const handleUnregister = async (row) => {
   await studentCoursesStore.removeStudentCourse(route.params.id, row.id)
+  emit('updateStudentCourses')
   await coursesStore.getCoursesToEnroll(route.params.id)
 }
 
 const handleView = (row) => {
   router.push(`/curso/${row.id}`)
+}
+
+const updateStudentForm = () => {
+  emit('updateStudentCourses')
 }
 </script>
 
@@ -142,7 +147,9 @@ const handleView = (row) => {
     </el-table-column>
   </el-table>
   <EnrollCourseForm
+    v-if="coursesNotFromUser.length"
     @changeFormVisibility="changeFormVisibility"
+    @updateStudentForm="updateStudentForm"
     :coursesToEnroll="coursesNotFromUser"
     :dialogFormVisible="dialogFormVisible"
     :studentToUpdate="studentToUpdate"

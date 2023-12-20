@@ -19,7 +19,7 @@ const props = defineProps({
   search: String,
   loading: Boolean
 })
-const emit = defineEmits(['updateCourse', 'updateStudents', 'handleSearch'])
+const emit = defineEmits(['updateStudents', 'handleSearch', 'updateCourseStudents'])
 
 onBeforeMount(async () => {
   await studentsStore.getUsersToEnroll(props.courseId)
@@ -64,7 +64,7 @@ const handleView = (row) => {
 }
 
 const updateCourseForm = () => {
-  emit('updateCourse')
+  emit('updateCourseStudents')
 }
 
 const updateStudentsForm = () => {
@@ -181,6 +181,7 @@ const updateStudentsForm = () => {
     </el-table-column>
   </el-table>
   <EnrollStudentForm
+    v-if="usersNotFromCourse.length"
     @changeFormVisibility="changeFormVisibility"
     @updateCourseForm="updateCourseForm"
     :dialogFormVisible="dialogFormVisible"

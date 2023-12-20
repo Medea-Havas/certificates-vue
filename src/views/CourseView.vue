@@ -66,11 +66,14 @@ const handleSizeChange = () => {
   filterTableData()
 }
 
-const updateCourse = () => {
-  courseStudentsStore.getCourseStudents(route.params.id)
+const updateCourseStudents = async () => {
+  await courseStudentsStore.getCourseStudents(route.params.id)
+  filterTableData()
 }
+
 const updateStudents = () => {
   studentsStore.getStudents()
+  filterTableData()
 }
 </script>
 
@@ -84,8 +87,8 @@ const updateStudents = () => {
     </el-tab-pane>
     <el-tab-pane label="Alumnos" name="users">
       <CourseStudents
-        @updateCourse="updateCourse"
         @updateStudents="updateStudents"
+        @updateCourseStudents="updateCourseStudents"
         @handleSearch="handleSearch"
         :courseId="parseInt(route.params.id)"
         :loading="loading"
