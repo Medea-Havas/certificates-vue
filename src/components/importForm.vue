@@ -107,7 +107,8 @@ const handleSubmitForm = () => {
   display: none;
 }
 .fileName {
-  margin-left: 1rem;
+  line-height: 1.5;
+  margin: 0.25rem;
 }
 .noFlex {
   display: block;

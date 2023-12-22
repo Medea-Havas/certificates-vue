@@ -68,9 +68,10 @@ export const useCoursesStore = defineStore('courses', () => {
       .then((res) => {
         if (res.status === 201) {
           let tempData = res.data
+          tempData['id'] = '' + res.data.id + ''
           tempData['template'] = data.template
           tempData['template_id'] = data.template_id
-          courses.value.unshift(tempData)
+          orderCoursesByDateInit(tempData)
           loading.value = false
         }
       })
@@ -148,6 +149,11 @@ export const useCoursesStore = defineStore('courses', () => {
         }
       })
       .catch((error) => console.log(error))
+  }
+
+  function orderCoursesByDateInit(data) {
+    courses.value.unshift(data)
+    courses.value = courses.value.sort((a, b) => new Date(b.date_init) - new Date(a.date_init))
   }
 
   getCourses()

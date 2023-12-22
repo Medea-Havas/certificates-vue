@@ -129,7 +129,6 @@ const handleSubmitForm = async (formEl) => {
   await formEl.validate((valid) => {
     if (valid && !templateIsWrong.value && !thumbnailIsWrong.value && !imageIsWrong.value) {
       if (props.isEdit) {
-        console.log('hey')
         coursesStore.updateCourse(form, props.course.id)
       } else {
         coursesStore.addCourse(form)
