@@ -33,7 +33,10 @@ const createAndEnrollUsers = async (data) => {
   await fetch(`${import.meta.env.VITE_API_HOST}/loadusers`, {
     method: 'POST',
     body: JSON.stringify(data),
-    headers: { 'Content-type': 'application/json;charset=UTF-8' }
+    headers: {
+      'Content-type': 'application/json;charset=UTF-8',
+      Token: 'Bearer ' + sessionStorage.getItem('token')
+    }
   })
     .then((response) => response.json())
     .then((res) => {
@@ -70,6 +73,7 @@ const handleSubmitForm = () => {
       tempRow.last_name = rows[i][1]
       tempRow.email = rows[i][2]
       tempRow.nif = rows[i][3]
+      tempRow.completed = rows[i][4]
       tempRow.course = route.params.id
       tempRows.push(tempRow)
     }
