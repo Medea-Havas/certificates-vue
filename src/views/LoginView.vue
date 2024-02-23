@@ -23,9 +23,14 @@ const handleSubmitForm = (formEl) => {
         if (res.status === 200) {
           sessionStorage.setItem('token', res.messages.data.token)
           router.push('/')
+        } else {
+          router.push('/login')
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error)
+        router.push('/login')
+      })
   })
 }
 </script>

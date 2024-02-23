@@ -12,7 +12,7 @@ export const useCoursesStore = defineStore('courses', () => {
     await fetch(`${import.meta.env.VITE_API_HOST}/courses`, {
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())
@@ -41,7 +41,7 @@ export const useCoursesStore = defineStore('courses', () => {
     await fetch(`${import.meta.env.VITE_API_HOST}/coursesnotfromuser/${userId}`, {
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())
@@ -61,7 +61,7 @@ export const useCoursesStore = defineStore('courses', () => {
       body: JSON.stringify(data),
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())
@@ -85,7 +85,7 @@ export const useCoursesStore = defineStore('courses', () => {
       body: JSON.stringify(data),
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())
@@ -109,7 +109,7 @@ export const useCoursesStore = defineStore('courses', () => {
       body: JSON.stringify(data),
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())
@@ -138,7 +138,7 @@ export const useCoursesStore = defineStore('courses', () => {
       method: 'DELETE',
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())

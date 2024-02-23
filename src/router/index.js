@@ -63,6 +63,16 @@ const router = createRouter({
       component: () => import('../views/LoginView.vue')
     },
     {
+      path: '/aviso-legal',
+      name: 'legal',
+      component: () => import('../views/LegalView.vue')
+    },
+    {
+      path: '/politica-de-privacidad',
+      name: 'privacy',
+      component: () => import('../views/PrivacyView.vue')
+    },
+    {
       path: '/404',
       name: 'notfound',
       component: () => import('../views/NotFoundView.vue')

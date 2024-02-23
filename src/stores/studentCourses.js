@@ -10,7 +10,7 @@ export const useStudentCoursesStore = defineStore('studentCourses', () => {
     await fetch(`${import.meta.env.VITE_API_HOST}/coursesfromuser/${studentId}`, {
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())
@@ -29,7 +29,7 @@ export const useStudentCoursesStore = defineStore('studentCourses', () => {
       method: 'DELETE',
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())

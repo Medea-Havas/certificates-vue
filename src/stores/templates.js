@@ -9,7 +9,7 @@ export const useTemplatesStore = defineStore('templates', () => {
     return await fetch(`${import.meta.env.VITE_API_HOST}/templates`, {
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())
@@ -28,7 +28,7 @@ export const useTemplatesStore = defineStore('templates', () => {
       body: JSON.stringify(data),
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())
@@ -46,7 +46,7 @@ export const useTemplatesStore = defineStore('templates', () => {
       body: JSON.stringify(data),
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())
@@ -64,7 +64,7 @@ export const useTemplatesStore = defineStore('templates', () => {
       method: 'DELETE',
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())

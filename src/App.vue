@@ -39,7 +39,13 @@ const open = (route) => {
 
 <template>
   <div
-    v-if="route.path != '/informe' && route.path != '/login' && route.path != '/404'"
+    v-if="
+      route.path != '/informe' &&
+      route.path != '/login' &&
+      route.path != '/aviso-legal' &&
+      route.path != '/politica-de-privacidad' &&
+      route.path != '/404'
+    "
     class="app"
   >
     <el-container>
@@ -88,6 +94,12 @@ const open = (route) => {
     <RouterView />
   </div>
   <div v-if="route.path == '/login'" class="login">
+    <RouterView />
+  </div>
+  <div v-if="route.path == '/aviso-legal'" class="aviso-legal">
+    <RouterView />
+  </div>
+  <div v-if="route.path == '/politica-de-privacidad'" class="politica-de-privacidad">
     <RouterView />
   </div>
   <div v-if="route.path == '/404'" class="notfound">

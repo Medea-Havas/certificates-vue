@@ -12,7 +12,7 @@ export const useStudentsStore = defineStore('students', () => {
     await fetch(`${import.meta.env.VITE_API_HOST}/users`, {
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())
@@ -31,7 +31,7 @@ export const useStudentsStore = defineStore('students', () => {
     await fetch(`${import.meta.env.VITE_API_HOST}/usersnotfromcourse/${courseId}`, {
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())
@@ -51,7 +51,7 @@ export const useStudentsStore = defineStore('students', () => {
       body: JSON.stringify(data),
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())
@@ -73,7 +73,7 @@ export const useStudentsStore = defineStore('students', () => {
       body: JSON.stringify(data),
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())
@@ -93,7 +93,7 @@ export const useStudentsStore = defineStore('students', () => {
       method: 'DELETE',
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())

@@ -35,7 +35,7 @@ const createAndEnrollUsers = async (data) => {
     body: JSON.stringify(data),
     headers: {
       'Content-type': 'application/json;charset=UTF-8',
-      Token: 'Bearer ' + sessionStorage.getItem('token')
+      Token: sessionStorage.getItem('token')
     }
   })
     .then((response) => response.json())
@@ -93,6 +93,8 @@ const handleSubmitForm = () => {
         <p class="fileName">{{ fileName }}</p>
       </el-form-item>
     </el-form>
+    <p class="tip">Columnas: Nombre, Apellidos, Email, NIF, Superado</p>
+    <p class="tip">Superado - Fecha de superación de examen (ej. 21/12/23 día/mes/año)</p>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="hideForm">Cancelar</el-button>
@@ -112,5 +114,8 @@ const handleSubmitForm = () => {
 }
 .noFlex {
   display: block;
+}
+.tip {
+  font-size: x-small;
 }
 </style>

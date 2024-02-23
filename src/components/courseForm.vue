@@ -42,7 +42,7 @@ const ruleFormRef = ref()
 const templateIsWrong = ref(false)
 const thumbFileList = ref([])
 const thumbnailIsWrong = ref(false)
-const headers = ref({ Token: 'Bearer ' + sessionStorage.getItem('token') })
+const headers = ref({ Token: sessionStorage.getItem('token') })
 
 if (props.isEdit) {
   form.id = props.course.id

@@ -10,7 +10,7 @@ export const useStatsStore = defineStore('stats', () => {
     await fetch(`${import.meta.env.VITE_API_HOST}/stats`, {
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
-        Token: 'Bearer ' + sessionStorage.getItem('token')
+        Token: sessionStorage.getItem('token')
       }
     })
       .then((response) => response.json())

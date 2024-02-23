@@ -3,6 +3,8 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import CryptoJS from 'crypto-js'
 import moment from 'moment'
+import ReportHeader from '../components/reportHeader.vue'
+import ReportFooter from '../components/reportFooter.vue'
 
 onMounted(() => {
   decrypted.value = decryptWithAES(cvs)
@@ -41,12 +43,7 @@ const decryptWithAES = (ciphertext) => {
 </script>
 
 <template>
-  <div className="sectionHeader">
-    <h1>
-      Secretaría técnica de programas de formación <br />
-      médica continuada
-    </h1>
-  </div>
+  <ReportHeader />
   <div class="container">
     <div v-if="error" class="content" style="text-align: center">Error. No hay datos.</div>
     <div v-if="!error" class="content">
@@ -54,7 +51,7 @@ const decryptWithAES = (ciphertext) => {
         <h2>Curso</h2>
         <p>{{ data.title }}</p>
       </div>
-      <div class="datafields">
+      <div class="datafields" v-if="data.accredited_by">
         <h2>Acreditado por</h2>
         <p>{{ data.accredited_by }}</p>
       </div>
@@ -74,7 +71,7 @@ const decryptWithAES = (ciphertext) => {
         <h2>Nº de expediente</h2>
         <p>{{ data.file_number }}</p>
       </div>
-      <div class="datafields">
+      <div class="datafields" v-if="data.city">
         <h2>Ciudad</h2>
         <p>{{ data.city }}</p>
       </div>
@@ -82,27 +79,28 @@ const decryptWithAES = (ciphertext) => {
         <h2>Número de créditos</h2>
         <p>{{ data.credits }}</p>
       </div>
-      <div class="datafields">
+      <div class="datafields" v-if="data.hours">
         <h2>Número de horas</h2>
         <p>{{ data.hours }}</p>
       </div>
-      <div class="datafields">
+      <div class="datafields" v-if="data.date_init && data.date_end">
         <h2>Duración</h2>
         <p>
           {{ moment(data.date_init).format('L') }} - {{ ' ' }}
           {{ moment(data.date_end).format('L') }}
         </p>
       </div>
-      <div class="datafields">
+      <div class="datafields" v-if="data.tutors">
         <h2>Tutor/es</h2>
         <p>{{ data.tutors }}</p>
       </div>
-      <div class="datafields">
+      <div class="datafields" v-if="data.content">
         <h2>Contenidos</h2>
         <p>{{ data.content }}</p>
       </div>
     </div>
   </div>
+  <ReportFooter />
 </template>
 
 <style scoped>
@@ -158,6 +156,7 @@ h2 {
   padding: 0.5rem 0 0;
   width: 100%;
 }
+
 .logo {
   margin: 0 auto;
   width: 10rem;
@@ -165,20 +164,7 @@ h2 {
 .main {
   max-width: unset !important;
 }
-.sectionHeader {
-  flex-shrink: 0;
-  max-width: 1600px;
-}
-.sectionHeader h1 {
-  color: var(--blue);
-  font-size: var(--lg);
-  line-height: 1.5;
-  margin: 1rem 0 3rem;
-  text-align: center;
-}
-.sectionHeader h1 br {
-  display: none;
-}
+
 @media (min-width: 900px) {
   .datafields {
     align-items: start;
@@ -203,11 +189,6 @@ h2 {
     border-radius: 10px 0 0 10px;
     color: inherit;
     padding: 1.25rem;
-  }
-}
-@media (min-width: 400px) {
-  .sectionHeader h1 br {
-    display: block;
   }
 }
 </style>
