@@ -1,13 +1,13 @@
 <script setup>
-import SectionFooter from '../components/sectionFooter.vue'
-import SectionHeader from '../components/sectionHeader.vue'
+import ReportHeader from '../components/reportHeader.vue'
+import ReportFooter from '../components/reportFooter.vue'
 
 const goBack = () => {
   window.history.back()
 }
 </script>
 <template>
-  <SectionHeader />
+  <ReportHeader />
   <div class="navigation">
     <el-button @click="goBack">Volver</el-button>
   </div>
@@ -336,7 +336,7 @@ const goBack = () => {
       <p>Última actualización: febrero 2024</p>
     </div>
   </main>
-  <SectionFooter />
+  <ReportFooter />
 </template>
 
 <style scoped>
