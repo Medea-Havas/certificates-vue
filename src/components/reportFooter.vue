@@ -7,11 +7,9 @@ import moment from 'moment'
     <div class="footerContainer">
       <p>© {{ moment().format('Y') }} MEDEA Education Agency S.L.</p>
       <ul>
-        <li><a class="legalLinks" href="/aviso-legal" target="_blank">Aviso legal</a></li>
+        <li><a class="legalLinks" href="/aviso-legal">Aviso legal</a></li>
         <li>
-          <a class="legalLinks" href="/politica-de-privacidad" target="_blank"
-            >Política de privacidad</a
-          >
+          <a class="legalLinks" href="/politica-de-privacidad">Política de privacidad</a>
         </li>
       </ul>
     </div>
