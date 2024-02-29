@@ -65,7 +65,7 @@ const decryptWithAES = (ciphertext) => {
       </div>
       <div class="datafields">
         <h2>Fecha de emisión</h2>
-        <p>{{ moment(data.date_completed).format('L') }}</p>
+        <p>{{ moment(data.date_completed).format('DD[/]MM[/]YYYY') }}</p>
       </div>
       <div class="datafields">
         <h2>Nº de expediente</h2>
@@ -86,8 +86,8 @@ const decryptWithAES = (ciphertext) => {
       <div class="datafields" v-if="data.date_init && data.date_end">
         <h2>Duración</h2>
         <p>
-          {{ moment(data.date_init).format('L') }} - {{ ' ' }}
-          {{ moment(data.date_end).format('L') }}
+          {{ moment(data.date_init).format('DD[/]MM[/]YYYY') }} - {{ ' ' }}
+          {{ moment(data.date_end).format('DD[/]MM[/]YYYY') }}
         </p>
       </div>
       <div class="datafields" v-if="data.tutors">
