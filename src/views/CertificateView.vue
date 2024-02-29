@@ -30,13 +30,11 @@ const route = useRoute()
 const studentStore = useStudentStore()
 const { studentCourse } = storeToRefs(studentStore)
 
-const rootPath = `${window.location.origin}${route.path}`
-
 onBeforeMount(async () => {
   await studentStore.getStudentCourse(route.query.userId, route.query.courseId)
   cvs.value = encryptWithAES(route.query.userId + 'CVS' + route.query.courseId).replaceAll('+', '-')
   toDataURL(
-    `https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${rootPath}informe?cvs=${cvs.value}&choe=UTF-8`,
+    `https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${window.location.origin}/informe?cvs=${cvs.value}&choe=UTF-8`,
     function (base64qr) {
       qr.value = base64qr
     }
