@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import router from '@/router'
 
 export const useTemplatesStore = defineStore('templates', () => {
   const loading = ref(true)
@@ -12,7 +13,16 @@ export const useTemplatesStore = defineStore('templates', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then((data) => {
         templates.value = data
         loading.value = false
@@ -31,7 +41,16 @@ export const useTemplatesStore = defineStore('templates', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then((res) => {
         if (res.status === 201) {
           templates.value.unshift(res.data)
@@ -49,7 +68,16 @@ export const useTemplatesStore = defineStore('templates', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then((res) => {
         if (res.status === 200) {
           let index = templates.value.findIndex((obj) => obj.id == data.id)
@@ -67,7 +95,16 @@ export const useTemplatesStore = defineStore('templates', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then((res) => {
         if (res.status === 200) {
           templates.value = templates.value.filter((item) => item.id !== id)

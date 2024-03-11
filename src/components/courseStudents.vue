@@ -1,17 +1,13 @@
 <script setup>
-import { ref, onBeforeMount } from 'vue'
-import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
 import { useCourseStudentsStore } from '@/stores/courseStudents'
-import { useStudentsStore } from '@/stores/students'
 import { Search } from '@element-plus/icons-vue'
 import EnrollStudentForm from '../components/enrollStudentForm.vue'
 import ImportForm from '../components/importForm.vue'
 import moment from 'moment'
 import router from '@/router'
 
-const studentsStore = useStudentsStore()
 const courseStudents = useCourseStudentsStore()
-const { usersNotFromCourse } = storeToRefs(studentsStore)
 
 const props = defineProps({
   students: Object,
@@ -20,10 +16,6 @@ const props = defineProps({
   loading: Boolean
 })
 const emit = defineEmits(['updateStudents', 'handleSearch', 'updateCourseStudents'])
-
-onBeforeMount(async () => {
-  await studentsStore.getUsersToEnroll(props.courseId)
-})
 
 const searchInput = ref(props.search)
 const dialogFormVisible = ref(false)
@@ -181,11 +173,11 @@ const updateStudentsForm = () => {
     </el-table-column>
   </el-table>
   <EnrollStudentForm
-    v-if="usersNotFromCourse.length"
+    v-if="dialogFormVisible"
     @changeFormVisibility="changeFormVisibility"
     @updateCourseForm="updateCourseForm"
     :dialogFormVisible="dialogFormVisible"
-    :studentsToEnroll="usersNotFromCourse"
+    :courseId="courseId"
   />
   <ImportForm
     @changeExcelFormVisibility="changeExcelFormVisibility"

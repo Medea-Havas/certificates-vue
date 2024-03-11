@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRoute } from 'vue-router'
 import readXlsxFile from 'read-excel-file'
+import router from '@/router'
 
 const route = useRoute()
 
@@ -38,7 +39,16 @@ const createAndEnrollUsers = async (data) => {
       Token: sessionStorage.getItem('token')
     }
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if (response.ok) {
+        return response.json()
+      }
+      if (response.status == 401) {
+        router.push('/login')
+      } else {
+        console.log(response)
+      }
+    })
     .then((res) => {
       if (res.status === 201) {
         if (res.error) {

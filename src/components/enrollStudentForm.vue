@@ -1,27 +1,36 @@
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, onBeforeMount, reactive, ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useCoursesStore } from '@/stores/courses'
+import { useStudentsStore } from '@/stores/students'
 import { useRoute } from 'vue-router'
 import moment from 'moment'
 
 const route = useRoute()
 
 const coursesStore = useCoursesStore()
+const studentsStore = useStudentsStore()
+
+const { usersNotFromCourse } = storeToRefs(studentsStore)
 
 const props = defineProps({
   dialogFormVisible: Boolean,
-  studentsToEnroll: Array
+  courseId: Number
 })
 const emit = defineEmits(['changeFormVisibility', 'updateCourseForm'])
+
+onBeforeMount(async () => {
+  await studentsStore.getUsersToEnroll(props.courseId)
+  studentList.value = usersNotFromCourse.value.map((element) => ({
+    value: element.id,
+    label: `${element.name} ${element.last_name}`
+  }))
+})
 
 const ruleFormRef = ref()
 const studentIsWrong = ref(false)
 const userIds = ref({})
 const studentList = ref([])
-studentList.value = props.studentsToEnroll.map((element) => ({
-  value: element.id,
-  label: `${element.name} ${element.last_name}`
-}))
 
 const isVisible = computed({
   get() {
@@ -83,19 +92,6 @@ const handleSubmitForm = async (formEl) => {
           placeholder="Seleccionar estudiante"
           style="width: 100%"
         />
-        <!-- <el-select
-          v-model="form.userId"
-          @change="handleCourseChange(e)"
-          :class="{ studentIsEmpty: studentIsWrong }"
-          placeholder="Seleccionar estudiante"
-        >
-          <el-option
-            v-for="(student, index) in studentsToEnroll"
-            :key="index"
-            :label="`${student.name} ${student.last_name}`"
-            :value="student.id"
-          />
-        </el-select> -->
         <div :class="{ 'el-form-item__error': studentIsWrong, hidden: !studentIsWrong }">
           El estudiante es necesario
         </div>

@@ -1,6 +1,8 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import moment from 'moment'
+import router from '@/router'
+import { useStatsStore } from './stats'
 
 export const useCoursesStore = defineStore('courses', () => {
   const courses = ref([])
@@ -15,7 +17,16 @@ export const useCoursesStore = defineStore('courses', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then(
         (data) =>
           // Initial sort by date_init
@@ -44,7 +55,16 @@ export const useCoursesStore = defineStore('courses', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then((data) => {
         coursesNotFromUser.value = data
         loading.value = false
@@ -64,7 +84,16 @@ export const useCoursesStore = defineStore('courses', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then((res) => {
         if (res.status === 201) {
           let tempData = res.data
@@ -73,6 +102,8 @@ export const useCoursesStore = defineStore('courses', () => {
           tempData['template_id'] = data.template_id
           orderCoursesByDateInit(tempData)
           loading.value = false
+          const stats = useStatsStore()
+          stats.getStats()
         }
       })
       .catch((error) => console.log(error))
@@ -88,14 +119,21 @@ export const useCoursesStore = defineStore('courses', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then((res) => {
         if (res.status === 201) {
-          console.log(data.course_id)
           coursesNotFromUser.value = coursesNotFromUser.value.filter(function (obj) {
             return obj.id !== data.course_id
           })
-          console.log(coursesNotFromUser.value)
           loading.value = false
         }
       })
@@ -112,7 +150,16 @@ export const useCoursesStore = defineStore('courses', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then((res) => {
         if (res.status === 200) {
           let index = courses.value.findIndex((obj) => obj.id == courseId)
@@ -141,7 +188,16 @@ export const useCoursesStore = defineStore('courses', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then((res) => {
         if (res.status === 200) {
           courses.value = courses.value.filter((item) => item.id !== id)

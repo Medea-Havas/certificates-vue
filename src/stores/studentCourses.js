@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import router from '@/router'
 
 export const useStudentCoursesStore = defineStore('studentCourses', () => {
   const loading = ref(true)
@@ -13,7 +14,16 @@ export const useStudentCoursesStore = defineStore('studentCourses', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then((data) => {
         studentCourses.value = data
         loading.value = false
@@ -32,7 +42,16 @@ export const useStudentCoursesStore = defineStore('studentCourses', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then((res) => {
         if (res.status === 200) {
           studentCourses.value = studentCourses.value.filter((item) => item.id !== courseId)

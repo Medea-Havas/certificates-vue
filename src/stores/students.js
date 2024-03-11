@@ -1,11 +1,15 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import router from '@/router'
+import { useStatsStore } from './stats'
+import { useCoursesStore } from '@/stores/courses'
 
 export const useStudentsStore = defineStore('students', () => {
   const loading = ref(true)
   const students = ref([])
   const studentsLength = ref(0)
   const usersNotFromCourse = ref([])
+  const stats = useStatsStore()
 
   async function getStudents() {
     loading.value = true
@@ -15,7 +19,16 @@ export const useStudentsStore = defineStore('students', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then((data) => {
         students.value = data
         studentsLength.value = data.length
@@ -34,7 +47,16 @@ export const useStudentsStore = defineStore('students', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then((data) => {
         usersNotFromCourse.value = data
         loading.value = false
@@ -54,13 +76,23 @@ export const useStudentsStore = defineStore('students', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then((res) => {
         if (res.status === 201) {
           let tempData = data
           tempData.id = res.messages.id
           students.value.unshift(data)
           loading.value = false
+          stats.getStats()
         }
       })
       .catch((error) => console.log(error))
@@ -76,12 +108,22 @@ export const useStudentsStore = defineStore('students', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then((res) => {
         if (res.status === 200) {
           let index = students.value.findIndex((obj) => obj.id == studentId)
           students.value[index] = data
           loading.value = false
+          stats.getStats()
         }
       })
       .catch((error) => console.log(error))
@@ -96,11 +138,21 @@ export const useStudentsStore = defineStore('students', () => {
         Token: sessionStorage.getItem('token')
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        if (response.status == 401) {
+          router.push('/login')
+        } else {
+          console.log(response)
+        }
+      })
       .then((res) => {
         if (res.status === 200) {
           students.value = students.value.filter((item) => item.id !== studentId)
           loading.value = false
+          stats.getStats()
         }
       })
       .catch((error) => console.log(error))
